@@ -6,6 +6,8 @@ import Structure from './Structure';
  */
 export default class Collection extends Structure {
     constructor() {
+        super();
+
         this.items = [];
         this.size = 0;
     }

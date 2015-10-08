@@ -1,5 +1,13 @@
 {
+    "scripts": {
+        "test": "./node_modules/.bin/karma start"
+    },
     "devDependencies": {
-        "mocha": "*"
+        "karma": "*",
+        "karma-jasmine": "*",
+        "karma-chrome-launcher": "*",
+        "karma-firefox-launcher": "*",
+        "karma-phantomjs-launcher": "*",
+        "karma-babel-preprocessor": "*"
     }
 }
