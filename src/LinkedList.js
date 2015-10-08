@@ -41,8 +41,7 @@ export default class LinkedList extends Collection {
      * @returns {LinkedList}
      */
     append(value) {
-        // Head has not been set yet
-        if (!this.head) {
+        if (this.isEmpty()) {
             return this.prepend(value);
         }
 
@@ -195,16 +194,13 @@ export default class LinkedList extends Collection {
         let node = this.createNode(value);
 
         // Head has not been set yet
-        if (!this.head) {
-            this.head = node;
-            this.tail = node;
-            this.size = 1;
-
-            return this;
-        }
+        if (this.isEmpty()) {
+            this._setRootNode(node);
 
         // Prepend the node
-        this._prependNode(node, this.head);
+        } else {
+            this._prependNode(node, this.head);
+        }
 
         // Increase the size
         this.size += 1;
@@ -429,6 +425,20 @@ export default class LinkedList extends Collection {
         if (previousNode) {
             previousNode.next = nextNode;
         }
+
+        return node;
+    }
+
+    /**
+     * Convenience method for setting a root node if no nodes exist (no head yet).
+     *
+     * @param {Node} node
+     * @returns {Node}
+     * @private
+     */
+    _setRootNode(node) {
+        this.head = node;
+        this.tail = node;
 
         return node;
     }
