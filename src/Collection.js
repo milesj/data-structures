@@ -1,4 +1,10 @@
-export default class Collection {
+import Structure from './Structure';
+
+/**
+ * @property {Node[]} items
+ * @property {number} size
+ */
+export default class Collection extends Structure {
     constructor() {
         this.items = [];
         this.size = 0;

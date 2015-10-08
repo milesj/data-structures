@@ -1,6 +1,10 @@
 import Collection from './Collection';
 import Node from './Node';
 
+/**
+ * @property {Node|null} head
+ * @property {Node|null} tail
+ */
 export default class LinkedList extends Collection {
     constructor() {
         super();
@@ -37,22 +41,13 @@ export default class LinkedList extends Collection {
      * @returns {LinkedList}
      */
     append(value) {
-        let node = this.createNode(value);
-
         // Head has not been set yet
         if (!this.head) {
-            this.head = node;
-            this.tail = node;
-            this.size = 1;
-
-            return this;
+            return this.prepend(value);
         }
 
-        // Set the tail node next to the new node
-        this.tail.next = node;
-
-        // Set the new node as the new tail
-        this.tail = node;
+        // Append the node
+        this._appendNode(this.createNode(value), this.tail);
 
         // Increase the size
         this.size += 1;
@@ -98,10 +93,10 @@ export default class LinkedList extends Collection {
     /**
      * Returns the first node in the list or null if it does not exist.
      *
-     * @returns {Node|null}
+     * @returns {*|null}
      */
     head() {
-        return this.head;
+        return this.head ? this.head.value : null;
     }
 
     /**
@@ -135,7 +130,7 @@ export default class LinkedList extends Collection {
      */
     insert(value, index) {
         if (index < 0 || index > this.size) {
-            throw new Error('Index out of range');
+            this.error('Index out of range');
 
         } else if (index === 0) {
             return this.prepend(value);
@@ -144,22 +139,12 @@ export default class LinkedList extends Collection {
             return this.append(value);
         }
 
-        let node = this.createNode(value),
-            curNode = this.head,
+        let curNode = this.head,
             prevNode = null,
             i = 0;
 
         while (curNode) {
             if (index === i) {
-                // Set the nodes next
-                node.next = curNode;
-
-                // Set the previous nodes next
-                prevNode.next = node;
-
-                // Increase the size
-                this.size += 1;
-
                 break;
             }
 
@@ -167,6 +152,12 @@ export default class LinkedList extends Collection {
             curNode = curNode.next;
             i++;
         }
+
+        // Insert the node
+        this._insertNode(this.createNode(value), curNode, prevNode);
+
+        // Increase the size
+        this.size += 1;
 
         return this;
     }
@@ -212,11 +203,8 @@ export default class LinkedList extends Collection {
             return this;
         }
 
-        // Set the previous head as the next of the new node
-        node.next = this.head;
-
-        // Set the new node as the new head
-        this.head = node;
+        // Prepend the node
+        this._prependNode(node, this.head);
 
         // Increase the size
         this.size += 1;
@@ -243,7 +231,34 @@ export default class LinkedList extends Collection {
      * @returns {Node|null}
      */
     remove(value) {
-        return this.removeAt(this.indexOf(value));
+        if (this.isEmpty()) {
+            this.error('{class} is empty');
+
+        } else if (this.head.value === value) {
+            return this.removeHead();
+
+        } else if (this.tail.value === value) {
+            return this.removeTail();
+        }
+
+        let curNode = this.head,
+            prevNode = null;
+
+        while (curNode) {
+            if (curNode.value === value) {
+                this._removeNode(curNode, curNode.next, prevNode);
+
+                // Decrease the size
+                this.size -= 1;
+
+                return value;
+            }
+
+            prevNode = curNode;
+            curNode = curNode.next;
+        }
+
+        return null;
     }
 
     /**
@@ -253,8 +268,11 @@ export default class LinkedList extends Collection {
      * @returns {Node|null}
      */
     removeAt(index) {
-        if (this.isEmpty() || index < 0 || index >= this.size) {
-            throw new Error('Index out of range');
+        if (this.isEmpty()) {
+            this.error('{class} is empty');
+
+        } else if (index < 0 || index >= this.size) {
+            this.error('Index out of range');
 
         } else if (index === 0) {
             return this.removeHead();
@@ -269,13 +287,12 @@ export default class LinkedList extends Collection {
 
         while (curNode) {
             if (index === i) {
-                // Join the previous and next nodes
-                prevNode.next = curNode.next;
+                this._removeNode(curNode, curNode.next, prevNode);
 
                 // Decrease the size
                 this.size -= 1;
 
-                return curNode;
+                return curNode.value;
             }
 
             prevNode = curNode;
@@ -287,66 +304,132 @@ export default class LinkedList extends Collection {
     }
 
     /**
-     * Remove and return the first node in the list, or null if no head.
+     * Remove and return the first node in the list.
      *
-     * @returns {Node|null}
+     * @returns {*}
      */
     removeHead() {
-        let head = this.head;
-
-        // Head has not been set
-        if (!head) {
-            throw new Error('List is empty');
+        if (this.isEmpty()) {
+            this.error('{class} is empty');
         }
 
-        // Set the head to the next node in line
+        let head = this.head;
+
+        // Reset tail if needed
+        if (this.head === this.tail) {
+            this.tail = null;
+        }
+
+        // Remove the head
+        this._removeNode(head, head.next, null);
         this.head = head.next;
 
         // Decrease the size
         this.size -= 1;
 
-        return head;
+        return head.value;
     }
 
     /**
-     * Remove and return the last node in the list, or null if no tail.
+     * Remove and return the last node in the list.
      *
-     * @returns {Node|null}
+     * @returns {null}
      */
     removeTail() {
+        if (this.isEmpty()) {
+            this.error('{class} is empty');
+
+        } else if (this.tail === this.head) {
+            return this.removeHead();
+        }
+
         let tail = this.tail;
 
-        // Tail has not been set
-        if (!tail) {
-            throw new Error('List is empty');
-        }
-
         // Set the 2nd to last node to null
-        let curNode = this.head;
+        let prevNode = this.head;
 
-        while (curNode) {
-            if (curNode.next) {
-                curNode = curNode.next;
-            }
+        while (prevNode && prevNode.next) {
+            prevNode = prevNode.next;
         }
 
-        curNode.next = null;
-
-        // Set the new tail
-        this.tail = curNode;
+        this._removeNode(tail, null, prevNode);
+        this.tail = prevNode;
 
         // Decrease the size
         this.size -= 1;
 
-        return tail;
+        return tail.value;
     }
 
     /**
      * Returns the last node in the list or null if it does not exist.
      *
-     * @returns {Node|null}
+     * @returns {*|null}
      */
     tail() {
-        return this.tail;
+        return this.tail ? this.tail.value : null;
+    }
+
+    /**
+     * Convenience method for appending a node and setting properties.
+     *
+     * @param {Node} node
+     * @param {Node} tailNode - The last node
+     * @returns {Node}
+     * @private
+     */
+    _appendNode(node, tailNode) {
+        tailNode.next = node;
+        this.tail = node;
+
+        return node;
+    }
+
+    /**
+     * Convenience method for inserting a node and setting properties.
+     *
+     * @param {Node} node
+     * @param {Node} currentNode - The node at the current index
+     * @param {Node} previousNode - The node at the previous index
+     * @returns {Node}
+     * @private
+     */
+    _insertNode(node, currentNode, previousNode) {
+        node.next = currentNode;
+        previousNode.next = node;
+
+        return node;
+    }
+
+    /**
+     * Convenience method for prepending a node and setting properties.
+     *
+     * @param {Node} node
+     * @param {Node} headNode - The first node
+     * @returns {Node}
+     * @private
+     */
+    _prependNode(node, headNode) {
+        node.next = headNode;
+        this.head = node;
+
+        return node;
+    }
+
+    /**
+     * Convenience method for removing a node and setting properties.
+     *
+     * @param {Node} node
+     * @param {Node} nextNode - The node at the next index
+     * @param {Node} previousNode - The node at the previous index
+     * @returns {Node}
+     * @private
+     */
+    _removeNode(node, nextNode, previousNode) {
+        if (previousNode) {
+            previousNode.next = nextNode;
+        }
+
+        return node;
     }
 }
