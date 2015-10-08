@@ -3,7 +3,7 @@ export default class Structure {
         params['class'] = this.constructor.name;
 
         Object.keys(params).forEach(key => {
-            message.replace('{' + key + '}', params[key]);
+            message = message.replace('{' + key + '}', params[key]);
         });
 
         throw new Error(message);

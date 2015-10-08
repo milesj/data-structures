@@ -1,17 +1,15 @@
 module.exports = function(config) {
     config.set({
         basePath: '',
-        frameworks: ['jasmine'],
+        frameworks: ['browserify', 'jasmine'],
         files: [
-            'node_modules/karma-babel-preprocessor/node_modules/babel-core/browser.js',
-            'node_modules/karma-babel-preprocessor/node_modules/babel-core/browser-polyfill.js',
             'src/*.js',
             'tests/*.js'
         ],
         exclude: [],
         preprocessors: {
-            'src/*.js': ['babel'],
-            'tests/*.js': ['babel']
+            'src/*.js': ['browserify'],
+            'tests/*.js': ['browserify']
         },
         reporters: ['progress'],
         port: 9876,
@@ -20,10 +18,9 @@ module.exports = function(config) {
         autoWatch: false,
         browsers: ['Chrome'], //, 'Firefox', 'PhantomJS'],
         singleRun: true,
-        babelPreprocessor: {
-            options: {
-                modules: 'common'
-            }
+        browserify: {
+            debug: true,
+            transform: ['babelify']
         }
     });
 };

@@ -16,15 +16,16 @@ export default class Collection extends Structure {
      * Iterate over all the items in the collection.
      */
     [Symbol.iterator]() {
-        let length = this.items.length,
+        let items = this.items,
+            size = this.size,
             i = 0;
 
         return {
             next() {
-                if (i === length) {
+                if (i === size) {
                     return { done: true };
                 } else {
-                    return { value: this.items[i].value };
+                    return { value: items[i++].value };
                 }
             }
         };
@@ -52,11 +53,17 @@ export default class Collection extends Structure {
     }
 
     /**
-     * Returns the size of the collection by counting all nodes.
+     * Return the collection as an array of values.
      *
-     * @returns {number}
+     * @returns {Array}
      */
-    size() {
-        return this.size;
+    toArray() {
+        let array = [];
+
+        for (let value of this) {
+            array.push(value);
+        }
+
+        return array;
     }
 }

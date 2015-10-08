@@ -90,11 +90,21 @@ export default class LinkedList extends Collection {
     }
 
     /**
+     * {@inheritdoc}
+     */
+    empty() {
+        this.head = this.tail = null;
+        this.size = 0;
+
+        return this;
+    }
+
+    /**
      * Returns the first node in the list or null if it does not exist.
      *
      * @returns {*|null}
      */
-    head() {
+    first() {
         return this.head ? this.head.value : null;
     }
 
@@ -159,6 +169,15 @@ export default class LinkedList extends Collection {
         this.size += 1;
 
         return this;
+    }
+
+    /**
+     * Returns the last node in the list or null if it does not exist.
+     *
+     * @returns {*|null}
+     */
+    last() {
+        return this.tail ? this.tail.value : null;
     }
 
     /**
@@ -231,10 +250,10 @@ export default class LinkedList extends Collection {
             this.error('{class} is empty');
 
         } else if (this.head.value === value) {
-            return this.removeHead();
+            return this.removeFirst();
 
         } else if (this.tail.value === value) {
-            return this.removeTail();
+            return this.removeLast();
         }
 
         let curNode = this.head,
@@ -271,10 +290,10 @@ export default class LinkedList extends Collection {
             this.error('Index out of range');
 
         } else if (index === 0) {
-            return this.removeHead();
+            return this.removeFirst();
 
         } else if (index === this.size - 1) {
-            return this.removeTail();
+            return this.removeLast();
         }
 
         let curNode = this.head,
@@ -304,7 +323,7 @@ export default class LinkedList extends Collection {
      *
      * @returns {*}
      */
-    removeHead() {
+    removeFirst() {
         if (this.isEmpty()) {
             this.error('{class} is empty');
         }
@@ -331,12 +350,12 @@ export default class LinkedList extends Collection {
      *
      * @returns {null}
      */
-    removeTail() {
+    removeLast() {
         if (this.isEmpty()) {
             this.error('{class} is empty');
 
         } else if (this.tail === this.head) {
-            return this.removeHead();
+            return this.removeFirst();
         }
 
         let tail = this.tail;
@@ -344,8 +363,12 @@ export default class LinkedList extends Collection {
         // Set the 2nd to last node to null
         let prevNode = this.head;
 
-        while (prevNode && prevNode.next) {
-            prevNode = prevNode.next;
+        while (prevNode) {
+            if (prevNode.next === this.tail) {
+                break;
+            } else {
+                prevNode = prevNode.next;
+            }
         }
 
         this._removeNode(tail, null, prevNode);
@@ -358,12 +381,16 @@ export default class LinkedList extends Collection {
     }
 
     /**
-     * Returns the last node in the list or null if it does not exist.
-     *
-     * @returns {*|null}
+     * {@inheritdoc}
      */
-    tail() {
-        return this.tail ? this.tail.value : null;
+    toArray() {
+        let array = [];
+
+        for (let value of this) {
+            array.push(value);
+        }
+
+        return array;
     }
 
     /**
