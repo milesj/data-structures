@@ -97,12 +97,17 @@ export default class LinkedList extends Collection {
     }
 
     /**
-     * Returns the first node in the list or null if it does not exist.
+     * Returns the first value in the list but does not remove it.
+     * Throws an error if the collection is empty.
      *
-     * @returns {*|null}
+     * @returns {*}
      */
     first() {
-        return this.head ? this.head.value : null;
+        if (this.isEmpty()) {
+            this.error('{class} is empty');
+        }
+
+        return this.head.value;
     }
 
     /**
@@ -169,12 +174,17 @@ export default class LinkedList extends Collection {
     }
 
     /**
-     * Returns the last node in the list or null if it does not exist.
+     * Returns the last value in the list but does not remove it.
+     * Throws an error if the collection is empty.
      *
-     * @returns {*|null}
+     * @returns {*}
      */
     last() {
-        return this.tail ? this.tail.value : null;
+        if (this.isEmpty()) {
+            this.error('{class} is empty');
+        }
+
+        return this.tail.value;
     }
 
     /**

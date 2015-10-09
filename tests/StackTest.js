@@ -47,7 +47,7 @@ describe('Stack', () => {
             expect(stack.isEmpty()).toBe(true);
             expect(stack.size).toBe(0);
 
-            stack.push(1).push(1);
+            stack.push(1).push(2);
 
             expect(stack.isEmpty()).toBe(false);
             expect(stack.size).toBe(2);

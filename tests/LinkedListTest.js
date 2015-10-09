@@ -106,8 +106,8 @@ describe('LinkedList', () => {
     });
 
     describe('first()', () => {
-        it('should return null if no head', () => {
-            expect(list.first()).toBeNull();
+        it('should error if empty', () => {
+            expect(() => { list.first(); }).toThrowError('LinkedList is empty');
         });
 
         it('should return the value', () => {
@@ -188,8 +188,8 @@ describe('LinkedList', () => {
     });
 
     describe('last()', () => {
-        it('should return null if no tail', () => {
-            expect(list.last()).toBeNull();
+        it('should error if empty', () => {
+            expect(() => { list.last(); }).toThrowError('LinkedList is empty');
         });
 
         it('should return the value', () => {

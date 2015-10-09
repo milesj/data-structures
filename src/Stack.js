@@ -1,5 +1,9 @@
 import Collection from './Collection';
 
+/**
+ * @property {number} index
+ * @property {number} capacity
+ */
 export default class Stack extends Collection {
     constructor(capacity = 0) {
         super();
