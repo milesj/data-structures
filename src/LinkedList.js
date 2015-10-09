@@ -14,7 +14,7 @@ export default class LinkedList extends Collection {
     }
 
     /**
-     * Iterate over all the nodes in the linked list.
+     * {@inheritdoc}
      */
     [Symbol.iterator]() {
         let curNode = this.head,

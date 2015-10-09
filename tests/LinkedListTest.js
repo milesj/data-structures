@@ -312,7 +312,7 @@ describe('LinkedList', () => {
         });
     });
 
-    describe('remove()', () => {
+    describe('removeAt()', () => {
         it('should error if the list is empty', () => {
             expect(() => { list.removeAt(0); }).toThrowError('LinkedList is empty');
         });

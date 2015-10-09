@@ -17,12 +17,12 @@ export default class DoublyLinkedList extends LinkedList {
     /**
      * {@inheritdoc}
      */
-    removeTail() {
+    removeLast() {
         if (this.isEmpty()) {
             this.error('{class} is empty');
 
         } else if (this.tail === this.head) {
-            return this.removeHead();
+            return this.removeFirst();
         }
 
         let tail = this.tail;

@@ -6,6 +6,30 @@ export default class CircularLinkedList extends LinkedList {
     /**
      * {@inheritdoc}
      */
+    [Symbol.iterator]() {
+        let head = this.head,
+            curNode = head,
+            node = null,
+            i = 0;
+
+        return {
+            next() {
+                if (!curNode || curNode === head && i !== 0) {
+                    return { done: true };
+                } else {
+                    node = curNode;
+                    curNode = curNode.next;
+                    i++;
+
+                    return { value: node.value };
+                }
+            }
+        };
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     _appendNode(node, tailNode) {
         node.next = this.head;
 
