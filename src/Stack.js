@@ -1,11 +1,10 @@
 import Collection from './Collection';
-import Node from './Node';
 
 export default class Stack extends Collection {
     constructor(capacity = 0) {
         super();
 
-        this.top = 0;
+        this.index = 0;
         this.capacity = capacity;
     }
 
@@ -17,16 +16,6 @@ export default class Stack extends Collection {
      */
     contains(value) {
         return (this.indexOf(value) >= 0);
-    }
-
-    /**
-     * Create a new Node for this type of list.
-     *
-     * @param {*} value
-     * @returns {Node}
-     */
-    createNode(value) {
-        return new Node(value);
     }
 
     /**
@@ -42,7 +31,7 @@ export default class Stack extends Collection {
             }
         }
 
-        return -i;
+        return -1;
     }
 
     /**
@@ -51,21 +40,7 @@ export default class Stack extends Collection {
      * @returns {boolean}
      */
     isFull() {
-        return (this.capacity > 0 && this.size === this.capacity);
-    }
-
-    /**
-     * Returns the top (last) value in the collection but does not remove it.
-     * Throws an error if the collection is empty.
-     *
-     * @returns {*}
-     */
-    last() {
-        if (this.isEmpty()) {
-            throw new Error(this.constructor.name + ' is empty');
-        }
-
-        return this.items[this.top - 1].value;
+        return (this.capacity > 0 && this.size >= this.capacity);
     }
 
     /**
@@ -76,10 +51,10 @@ export default class Stack extends Collection {
      */
     pop() {
         if (this.isEmpty()) {
-            throw new Error(this.constructor.name + ' is empty');
+            this.error('{class} is empty');
         }
 
-        this.top -= 1;
+        this.index -= 1;
         this.size -= 1;
 
         return this.items.pop().value;
@@ -94,7 +69,7 @@ export default class Stack extends Collection {
     popAll() {
         let values = [];
 
-        while (this.top) {
+        while (this.index) {
             values.push(this.pop());
         }
 
@@ -110,11 +85,11 @@ export default class Stack extends Collection {
      */
     push(value) {
         if (this.isFull()) {
-            throw new Error(this.constructor.name + ' is full');
+            this.error('{class} is full');
         }
 
-        this.items[this.top] = this.createNode.apply(this, arguments);
-        this.top += 1;
+        this.items[this.index] = this.createNode(value);
+        this.index += 1;
         this.size += 1;
 
         return this;
@@ -130,5 +105,19 @@ export default class Stack extends Collection {
         values.forEach(this.push.bind(this));
 
         return this;
+    }
+
+    /**
+     * Returns the top (last) value in the collection but does not remove it.
+     * Throws an error if the collection is empty.
+     *
+     * @returns {*}
+     */
+    top() {
+        if (this.isEmpty()) {
+            this.error('{class} is empty');
+        }
+
+        return this.items[this.index - 1].value;
     }
 }

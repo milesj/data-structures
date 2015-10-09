@@ -137,7 +137,6 @@ describe('LinkedList', () => {
             list.append(1).append(2).append(2).append(3);
 
             expect(list.indexOf(2)).toBe(1);
-            expect(list.indexOf(2)).toBe(1);
         });
     });
 

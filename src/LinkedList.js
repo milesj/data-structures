@@ -77,10 +77,7 @@ export default class LinkedList extends Collection {
     }
 
     /**
-     * Create a new Node for this type of list.
-     *
-     * @param {*} value
-     * @returns {Node}
+     * {@inheritdoc}
      */
     createNode(value) {
         let node = new Node(value);
