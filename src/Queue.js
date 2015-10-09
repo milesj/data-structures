@@ -81,7 +81,7 @@ export default class Queue extends Collection {
             this.error('{class} is full');
         }
 
-        this.items[this.index] = this.createNode.apply(this, arguments);
+        this.items[this.index] = this.createNode(value);
         this.index += 1;
         this.size += 1;
 
