@@ -17,7 +17,7 @@ export default class Tree extends Structure {
      * If no target node could be found, returns -1.
      *
      * @param {*} value
-     * @returns {number}
+     * @returns {Number}
      */
     depth(value) {
         return 0;
@@ -40,7 +40,7 @@ export default class Tree extends Structure {
      * If no target node could be found, returns -1.
      *
      * @param {*} value
-     * @returns {number}
+     * @returns {Number}
      */
     height(value) {
         return 0;
@@ -49,7 +49,7 @@ export default class Tree extends Structure {
     /**
      * Returns true if the tree is empty.
      *
-     * @returns {boolean}
+     * @returns {Boolean}
      */
     isEmpty() {
         return (this.size === 0 || !this.root);
@@ -58,7 +58,7 @@ export default class Tree extends Structure {
     /**
      * Returns true if every node (excluding leaf nodes) has only 1 child.
      *
-     * @return {boolean}
+     * @return {Boolean}
      */
     isSkewed() {
 
@@ -67,7 +67,7 @@ export default class Tree extends Structure {
     /**
      * Returns true if every node (excluding leaf nodes) has only 1 child and points to the left.
      *
-     * @return {boolean}
+     * @return {Boolean}
      */
     isSkewedLeft() {
 
@@ -76,7 +76,7 @@ export default class Tree extends Structure {
     /**
      * Returns true if every node (excluding leaf nodes) has only 1 child and points to the right.
      *
-     * @return {boolean}
+     * @return {Boolean}
      */
     isSkewedRight() {
 
@@ -85,18 +85,27 @@ export default class Tree extends Structure {
     /**
      * Calculate the max depth (or height) of the tree from the root node to the deepest leaf node.
      *
-     * @returns {number}
+     * @returns {Number}
      */
     maxDepth() {
-        return 0;
+        return -1;
     }
 
     /**
      * Alias for `maxDepth()`.
      *
-     * @returns {number}
+     * @returns {Number}
      */
     maxHeight() {
         return this.maxDepth();
+    }
+
+    /**
+     * Calculate the max number of levels in the tree.
+     *
+     * @returns {Number}
+     */
+    maxLevel() {
+        return -1;
     }
 }

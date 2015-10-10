@@ -2,8 +2,8 @@ import Collection from './Collection';
 import Node from './Node';
 
 /**
- * @property {Node|null} head
- * @property {Node|null} tail
+ * @property {LinkedListNode|null} head
+ * @property {LinkedListNode|null} tail
  */
 export default class LinkedList extends Collection {
     constructor() {
@@ -70,7 +70,7 @@ export default class LinkedList extends Collection {
      * Returns true if the list contains the specified value.
      *
      * @param {*} value
-     * @returns {boolean}
+     * @returns {Boolean}
      */
     contains(value) {
         return (this.indexOf(value) >= 0);
@@ -80,10 +80,7 @@ export default class LinkedList extends Collection {
      * {@inheritdoc}
      */
     createNode(value) {
-        let node = new Node(value);
-            node.next = null;
-
-        return node;
+        return new LinkedListNode(value);
     }
 
     /**
@@ -114,7 +111,7 @@ export default class LinkedList extends Collection {
      * Returns the index of the first occurrence of the specified value in this list or -1 otherwise.
      *
      * @param {*} value
-     * @returns {number}
+     * @returns {Number}
      */
     indexOf(value) {
         let curNode = this.head,
@@ -136,7 +133,7 @@ export default class LinkedList extends Collection {
      * Insert a node at a specified index.
      *
      * @param {*} value
-     * @param {number} index
+     * @param {Number} index
      * @returns {LinkedList}
      */
     insert(value, index) {
@@ -191,7 +188,7 @@ export default class LinkedList extends Collection {
      * Returns the index of the last occurrence of the specified value in this list or -1 otherwise.
      *
      * @param {*} value
-     * @returns {number}
+     * @returns {Number}
      */
     lastIndexOf(value) {
         let curNode = this.head,
@@ -250,7 +247,7 @@ export default class LinkedList extends Collection {
      * Remove and return the node with the specified value, or null if not found.
      *
      * @param {*} value
-     * @returns {Node|null}
+     * @returns {*}
      */
     remove(value) {
         if (this.isEmpty()) {
@@ -286,8 +283,8 @@ export default class LinkedList extends Collection {
     /**
      * Remove and return the node at the specific index, or null if not found.
      *
-     * @param {number} index
-     * @returns {Node|null}
+     * @param {Number} index
+     * @returns {*}
      */
     removeAt(index) {
         if (this.isEmpty()) {
@@ -388,6 +385,26 @@ export default class LinkedList extends Collection {
     }
 
     /**
+     * Search for a node that matches the defined value, or null if it could not be found.
+     *
+     * @param {*} value
+     * @returns {LinkedListNode}
+     */
+    search(value) {
+        let curNode = this.head;
+
+        while (curNode) {
+            if (curNode.value === value) {
+                return curNode;
+            }
+
+            curNode = curNode.next;
+        }
+
+        return null;
+    }
+
+    /**
      * {@inheritdoc}
      */
     toArray() {
@@ -403,9 +420,9 @@ export default class LinkedList extends Collection {
     /**
      * Convenience method for appending a node and setting properties.
      *
-     * @param {Node} node
-     * @param {Node} tailNode - The last node
-     * @returns {Node}
+     * @param {LinkedListNode} node
+     * @param {LinkedListNode} tailNode - The last node
+     * @returns {LinkedListNode}
      * @private
      */
     _appendNode(node, tailNode) {
@@ -418,10 +435,10 @@ export default class LinkedList extends Collection {
     /**
      * Convenience method for inserting a node and setting properties.
      *
-     * @param {Node} node
-     * @param {Node} currentNode - The node at the current index
-     * @param {Node} previousNode - The node at the previous index
-     * @returns {Node}
+     * @param {LinkedListNode} node
+     * @param {LinkedListNode} currentNode - The node at the current index
+     * @param {LinkedListNode} previousNode - The node at the previous index
+     * @returns {LinkedListNode}
      * @private
      */
     _insertNode(node, currentNode, previousNode) {
@@ -434,9 +451,9 @@ export default class LinkedList extends Collection {
     /**
      * Convenience method for prepending a node and setting properties.
      *
-     * @param {Node} node
-     * @param {Node} headNode - The first node
-     * @returns {Node}
+     * @param {LinkedListNode} node
+     * @param {LinkedListNode} headNode - The first node
+     * @returns {LinkedListNode}
      * @private
      */
     _prependNode(node, headNode) {
@@ -449,10 +466,10 @@ export default class LinkedList extends Collection {
     /**
      * Convenience method for removing a node and setting properties.
      *
-     * @param {Node} node
-     * @param {Node} nextNode - The node at the next index
-     * @param {Node} previousNode - The node at the previous index
-     * @returns {Node}
+     * @param {LinkedListNode} node
+     * @param {LinkedListNode} nextNode - The node at the next index
+     * @param {LinkedListNode} previousNode - The node at the previous index
+     * @returns {LinkedListNode}
      * @private
      */
     _removeNode(node, nextNode, previousNode) {
@@ -466,8 +483,8 @@ export default class LinkedList extends Collection {
     /**
      * Convenience method for setting a root node if no nodes exist (no head yet).
      *
-     * @param {Node} node
-     * @returns {Node}
+     * @param {LinkedListNode} node
+     * @returns {LinkedListNode}
      * @private
      */
     _setRootNode(node) {
@@ -475,5 +492,16 @@ export default class LinkedList extends Collection {
         this.tail = node;
 
         return node;
+    }
+}
+
+/**
+ * @property {LinkedListNode|null} next
+ */
+export class LinkedListNode extends Node {
+    constructor(value) {
+        super(value);
+
+        this.next = null;
     }
 }

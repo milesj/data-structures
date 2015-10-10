@@ -1,8 +1,8 @@
 import Collection from './Collection';
 
 /**
- * @property {number} index
- * @property {number} capacity
+ * @property {Number} index
+ * @property {Number} capacity
  */
 export default class Stack extends Collection {
     constructor(capacity = 0) {
@@ -16,7 +16,7 @@ export default class Stack extends Collection {
      * Returns true if the collection contains the specified value.
      *
      * @param {*} value
-     * @returns {boolean}
+     * @returns {Boolean}
      */
     contains(value) {
         return (this.indexOf(value) >= 0);
@@ -26,7 +26,7 @@ export default class Stack extends Collection {
      * Returns the index of the first occurrence of the specified value in this collection or -1 otherwise.
      *
      * @param {*} value
-     * @returns {number}
+     * @returns {Number}
      */
     indexOf(value) {
         for (var i = 0; i < this.size; i++) {
@@ -41,7 +41,7 @@ export default class Stack extends Collection {
     /**
      * Return true if a capacity is set, and the capacity is full.
      *
-     * @returns {boolean}
+     * @returns {Boolean}
      */
     isFull() {
         return (this.capacity > 0 && this.size >= this.capacity);

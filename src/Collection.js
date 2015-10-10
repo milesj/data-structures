@@ -2,7 +2,7 @@ import Structure from './Structure';
 
 /**
  * @property {Node[]} items
- * @property {number} size
+ * @property {Number} size
  */
 export default class Collection extends Structure {
     constructor() {
@@ -46,7 +46,7 @@ export default class Collection extends Structure {
     /**
      * Returns true if the collection is empty.
      *
-     * @returns {boolean}
+     * @returns {Boolean}
      */
     isEmpty() {
         return (this.size === 0);

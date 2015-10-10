@@ -1,5 +1,4 @@
-import LinkedList from '../src/LinkedList';
-import Node from '../src/Node';
+import LinkedList, { LinkedListNode } from '../src/LinkedList';
 
 describe('LinkedList', () => {
     let list = null;
@@ -78,10 +77,10 @@ describe('LinkedList', () => {
     });
 
     describe('createNode()', () => {
-        it('should create a Node', () => {
+        it('should create a node', () => {
             let node = list.createNode(1);
 
-            expect(node instanceof Node).toBe(true);
+            expect(node instanceof LinkedListNode).toBe(true);
             expect(node.value).toBe(1);
             expect(node.next).toBeNull();
         });
@@ -450,6 +449,24 @@ describe('LinkedList', () => {
             expect(last).toBe(4);
             expect(list.tail.value).toBe(3);
             expect(list.size).toBe(3);
+        });
+    });
+
+    describe('search()', () => {
+        it('should return null if not found', () => {
+            list.append(1);
+
+            expect(list.search(2)).toBeNull();
+        });
+
+        it('should return the node if match is found', () => {
+            list.appendAll([1, 2, 3, 4, 5]);
+
+            let node = list.search(4);
+
+            expect(node instanceof LinkedListNode).toBe(true);
+            expect(node.value).toBe(4);
+            expect(node.next.value).toBe(5);
         });
     });
 

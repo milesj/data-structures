@@ -1,5 +1,4 @@
-import DoublyLinkedList from '../src/DoublyLinkedList';
-import Node from '../src/Node';
+import DoublyLinkedList, { DoublyLinkedListNode } from '../src/DoublyLinkedList';
 
 describe('DoublyLinkedList', () => {
     let list = null;
@@ -27,10 +26,10 @@ describe('DoublyLinkedList', () => {
     });
 
     describe('createNode()', () => {
-        it('should create a Node', () => {
+        it('should create a node', () => {
             let node = list.createNode(1);
 
-            expect(node instanceof Node).toBe(true);
+            expect(node instanceof DoublyLinkedListNode).toBe(true);
             expect(node.value).toBe(1);
             expect(node.next).toBeNull();
             expect(node.prev).toBeNull();
@@ -151,6 +150,19 @@ describe('DoublyLinkedList', () => {
             expect(list.tail.value).toBe(3);
             expect(list.tail.prev.value).toBe(2);
             expect(list.size).toBe(3);
+        });
+    });
+
+    describe('search()', () => {
+        it('should return the node if match is found', () => {
+            list.appendAll([1, 2, 3, 4, 5]);
+
+            let node = list.search(4);
+
+            expect(node instanceof DoublyLinkedListNode).toBe(true);
+            expect(node.value).toBe(4);
+            expect(node.next.value).toBe(5);
+            expect(node.prev.value).toBe(3);
         });
     });
 });

@@ -53,13 +53,13 @@ export default class BinaryTree extends Tree {
     /**
      * Return an array of all leaf nodes.
      *
-     * @returns {Node[]}
+     * @returns {BinaryTreeNode[]}
      */
     getLeafNodes() {
         let nodes = [];
 
         this.traverse(function(value, node) {
-            if (!node.left && !node.right) {
+            if (node.isLeaf()) {
                 nodes.push(node);
             }
         });
@@ -71,7 +71,7 @@ export default class BinaryTree extends Tree {
      * Return an array of all nodes at a specific level. If no nodes can be found, an empty array is returned.
      *
      * @param {Number} level
-     * @returns {Node[]}
+     * @returns {BinaryTreeNode[]}
      */
     getNodesAtLevel(level) {
         if (level < 0) {
@@ -112,14 +112,15 @@ export default class BinaryTree extends Tree {
      * {@inheritdoc}
      */
     height(value) {
-        let node = this.search(value),
-            height = 0;
+        let node;
 
-        if (node === null) {
+        try {
+            node = this.search(value);
+        } catch (e) {
             return -1;
         }
 
-        // TODO
+        return node ? node.height() : -1;
     }
 
     /**
@@ -188,7 +189,7 @@ export default class BinaryTree extends Tree {
         let skewed = true;
 
         this.traverse(function(value, node) {
-            if (!node.left && !node.right) {
+            if (node.isLeaf()) {
                 // Exclude leaf
 
             } else if (node.left && node.right) {
@@ -207,7 +208,7 @@ export default class BinaryTree extends Tree {
         let skewed = true;
 
         this.traverse(function(value, node) {
-            if (!node.left && !node.right) {
+            if (node.isLeaf()) {
                 // Exclude leaf
 
             } else if (!node.left && node.right) {
@@ -226,7 +227,7 @@ export default class BinaryTree extends Tree {
         let skewed = true;
 
         this.traverse(function(value, node) {
-            if (!node.left && !node.right) {
+            if (node.isLeaf()) {
                 // Exclude leaf
 
             } else if (node.left && !node.right) {
@@ -256,8 +257,68 @@ export default class BinaryTree extends Tree {
         return strict;
     }
 
-    remove(value) {
+    /**
+     * {@inheritdoc}
+     */
+    maxDepth() {
+        return this.isEmpty() ? -1 : this.root.height();
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    maxLevel() {
+        if (this.isEmpty()) {
+            return -1;
+        }
+
+        let curLevel = 0,
+            nextLevel = 1,
+            i = 0;
+
+        this.traverse(function() {
+            // Go to next level
+            if (i === nextLevel) {
+                curLevel += 1;
+                nextLevel *= 2;
+                i = 0;
+            }
+
+            // Increase count for this level
+            i++;
+        });
+
+        return curLevel;
+    }
+
+    /**
+     * Remove a node from the tree that matches the specified value and reorganize all descendant nodes.
+     * Returns true if a node was found, or false otherwise.
+     *
+     * @param {*} value
+     * @returns {Boolean}
+     */
+    remove(value) {
+        if (this.isEmpty()) {
+            this.error('{class} is empty');
+        }
+
+        let curNode = this.root,
+            prevNode = null;
+
+        return false;
+    }
+
+    /**
+     * Remove multiple values from the tree.
+     *
+     * @param {*[]} values
+     * @returns {BinaryTree}
+     */
+    removeAll(values) {
+        values.forEach(this.remove.bind(this));
+
+        return this;
     }
 
     /**
@@ -265,7 +326,7 @@ export default class BinaryTree extends Tree {
      * Throws an error if the tree is empty.
      *
      * @param {*} value
-     * @returns {Node|null}
+     * @returns {BinaryTreeNode|null}
      */
     search(value) {
         if (this.isEmpty()) {
@@ -355,6 +416,18 @@ export class BinaryTreeNode extends Node {
     }
 
     /**
+     * Return the height of this node to the deepest child node.
+     *
+     * @returns {Number}
+     */
+    height() {
+        let leftHeight = this.left ? this.left.height() : 0,
+            rightHeight = this.right ? this.right.height() : 0;
+
+        return Math.max(leftHeight, rightHeight) + 1;
+    }
+
+    /**
      * Recursively traverse nodes using the in-order algorithm.
      *
      * @param {Function} callback
@@ -376,7 +449,7 @@ export class BinaryTreeNode extends Node {
     /**
      * Insert the node in either the left or right sub-tree.
      *
-     * @param {Node} node
+     * @param {BinaryTreeNode} node
      */
     insert(node) {
 
@@ -396,6 +469,15 @@ export class BinaryTreeNode extends Node {
                 this.left.insert(node);
             }
         }
+    }
+
+    /**
+     * Returns true if the node is a leaf node.
+     *
+     * @returns {Boolean}
+     */
+    isLeaf() {
+        return (!this.left && !this.right);
     }
 
     /**
@@ -438,7 +520,7 @@ export class BinaryTreeNode extends Node {
      * Recursively search for a node that matches the defined value, or return null if none found.
      *
      * @param {*} value
-     * @returns {Node|null}
+     * @returns {BinaryTreeNode|null}
      */
     search(value) {
         if (value === this.value) {
@@ -452,5 +534,24 @@ export class BinaryTreeNode extends Node {
         }
 
         return null;
+    }
+
+    /**
+     * Returns a count of all descendant child nodes including itself.
+     *
+     * @returns {Number}
+     */
+    size() {
+        let size = 0;
+
+        if (this.left) {
+            size += this.left.size();
+        }
+
+        if (this.right) {
+            size += this.right.size();
+        }
+
+        return size + 1;
     }
 }

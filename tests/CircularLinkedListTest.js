@@ -1,5 +1,5 @@
 import CircularLinkedList from '../src/CircularLinkedList';
-import Node from '../src/Node';
+import { LinkedListNode } from '../src/LinkedList';
 
 describe('CircularLinkedList', () => {
     let list = null;
@@ -137,6 +137,18 @@ describe('CircularLinkedList', () => {
             expect(list.tail.value).toBe(2);
             expect(list.tail.next.value).toEqual(1);
             expect(list.size).toBe(2);
+        });
+    });
+
+    describe('search()', () => {
+        it('should return the node if match is found', () => {
+            list.appendAll([1, 2, 3, 4, 5]);
+
+            let node = list.search(5);
+
+            expect(node instanceof LinkedListNode).toBe(true);
+            expect(node.value).toBe(5);
+            expect(node.next.value).toBe(1);
         });
     });
 

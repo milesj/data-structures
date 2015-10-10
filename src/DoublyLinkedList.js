@@ -1,5 +1,5 @@
-import Node from './Node';
 import LinkedList from './LinkedList';
+import Node from './Node';
 
 export default class DoublyLinkedList extends LinkedList {
 
@@ -7,11 +7,7 @@ export default class DoublyLinkedList extends LinkedList {
      * {@inheritdoc}
      */
     createNode(value) {
-        let node = new Node(value);
-            node.next = null;
-            node.prev = null;
-
-        return node;
+        return new DoublyLinkedListNode(value);
     }
 
     /**
@@ -73,5 +69,18 @@ export default class DoublyLinkedList extends LinkedList {
         }
 
         return super._removeNode(node, nextNode, previousNode);
+    }
+}
+
+/**
+ * @property {DoublyLinkedListNode|null} next
+ * @property {DoublyLinkedListNode|null} prev
+ */
+export class DoublyLinkedListNode extends Node {
+    constructor(value) {
+        super(value);
+
+        this.next = null;
+        this.prev = null;
     }
 }
