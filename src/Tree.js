@@ -13,14 +13,14 @@ export default class Tree extends Structure {
     }
 
     /**
-     * Calculates the depth of the tree from the root node to the target node that matches the defined value.
-     * If no target node could be found, returns -1.
+     * Calculates the number of edges from the root node to the node that matches the defined value.
+     * If no node could be found, returns -1.
      *
      * @param {*} value
      * @returns {Number}
      */
     depth(value) {
-        return 0;
+        return -1;
     }
 
     /**
@@ -36,14 +36,14 @@ export default class Tree extends Structure {
     }
 
     /**
-     * Calculates the height of the tree from the target node to the deepest leaf node.
-     * If no target node could be found, returns -1.
+     * Calculates the number of edges from the target node to the deepest leaf node.
+     * If no node could be found, returns -1.
      *
      * @param {*} value
      * @returns {Number}
      */
     height(value) {
-        return 0;
+        return -1;
     }
 
     /**
@@ -53,33 +53,6 @@ export default class Tree extends Structure {
      */
     isEmpty() {
         return (this.size === 0 || !this.root);
-    }
-
-    /**
-     * Returns true if every node (excluding leaf nodes) has only 1 child.
-     *
-     * @return {Boolean}
-     */
-    isSkewed() {
-
-    }
-
-    /**
-     * Returns true if every node (excluding leaf nodes) has only 1 child and points to the left.
-     *
-     * @return {Boolean}
-     */
-    isSkewedLeft() {
-
-    }
-
-    /**
-     * Returns true if every node (excluding leaf nodes) has only 1 child and points to the right.
-     *
-     * @return {Boolean}
-     */
-    isSkewedRight() {
-
     }
 
     /**
