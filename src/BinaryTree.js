@@ -1,19 +1,20 @@
 import Tree from './adt/Tree';
 import Node from './Node';
 import Queue from './Queue';
+import Comparator from './Comparator';
 
 export const IN_ORDER = 'IN_ORDER';
 export const PRE_ORDER = 'PRE_ORDER';
 export const POST_ORDER = 'POST_ORDER';
 export const LEVEL_ORDER = 'LEVEL_ORDER';
 
-const hasher = Symbol('hasher');
+const comparator = Symbol('comparator');
 
 export default class BinaryTree extends Tree {
-    constructor(func) {
+    constructor(object) {
         super();
 
-        this[hasher] = (typeof func === 'function') ? func : value => value;
+        this[comparator] = (object instanceof Comparator) ? object : new Comparator();
     }
 
     /**
@@ -30,14 +31,14 @@ export default class BinaryTree extends Tree {
      * {@inheritdoc}
      */
     createNode(value) {
-        return new BinaryTreeNode(this[hasher](value), value);
+        return new BinaryTreeNode(this[comparator].hash(value), value);
     }
 
     /**
      * {@inheritdoc}
      */
     depth(value) {
-        return this.isEmpty() ? -1 : this.root.depth(value);
+        return this.isEmpty() ? -1 : this.root.depth(value, this[comparator]);
     }
 
     /**
@@ -126,7 +127,7 @@ export default class BinaryTree extends Tree {
 
         // Insert onto the root node directly
         } else {
-            this.root.insert(node);
+            this.root.insert(node, this[comparator]);
         }
 
         // Increase the size
@@ -307,10 +308,28 @@ export default class BinaryTree extends Tree {
     }
 
     /**
+     * Returns the maximum value node in the tree, or null if empty.
+     *
+     * @returns {BinaryTreeNode|null}
+     */
+    max() {
+        return this.isEmpty() ? null : this.root.max(this.root);
+    }
+
+    /**
      * {@inheritdoc}
      */
     maxDepth() {
         return this.isEmpty() ? -1 : this.root.height();
+    }
+
+    /**
+     * Returns the minimum value node in the tree, or null if empty.
+     *
+     * @returns {BinaryTreeNode|null}
+     */
+    min() {
+        return this.isEmpty() ? null : this.root.min(this.root);
     }
 
     /**
@@ -339,13 +358,13 @@ export default class BinaryTree extends Tree {
             let tempRoot = this.createNode(value);
                 tempRoot.left = this.root;
 
-            result = this.root.remove(value, tempRoot);
+            result = this.root.remove(value, tempRoot, this[comparator]);
 
             this.root = tempRoot.left;
 
         // Remove a child
         } else {
-            result = this.root.remove(value, null);
+            result = this.root.remove(value, null, this[comparator]);
         }
 
         // Decrease the size
@@ -373,7 +392,7 @@ export default class BinaryTree extends Tree {
      * @returns {BinaryTreeNode|null}
      */
     search(value) {
-        return this.isEmpty() ? null : this.root.search(value);
+        return this.isEmpty() ? null : this.root.search(value, this[comparator]);
     }
 
     /**
@@ -472,25 +491,26 @@ export class BinaryTreeNode extends Node {
      * Return the depth of this node to the child node that matches the value.
      *
      * @param {*} value
+     * @param {Comparator} comparator
      * @returns {Number}
      */
-    depth(value) {
+    depth(value, comparator) {
         let depth = -1;
 
-        if (value === this.value) {
+        if (comparator.equals(value, this.value)) {
             return 0;
 
-        } else if (value > this.value) {
+        } else if (comparator.greaterThan(value, this.value)) {
             if (this.right) {
-                depth = this.right.depth(value);
+                depth = this.right.depth(value, comparator);
 
             } else {
                 return -1;
             }
 
-        } else if (value < this.value) {
+        } else if (comparator.lessThan(value, this.value)) {
             if (this.left) {
-                depth = this.left.depth(value);
+                depth = this.left.depth(value, comparator);
 
             } else {
                 return -1;
@@ -567,19 +587,20 @@ export class BinaryTreeNode extends Node {
      * Insert the node in either the left or right sub-tree.
      *
      * @param {BinaryTreeNode} node
+     * @param {Comparator} comparator
      */
-    insert(node) {
+    insert(node, comparator) {
         if (!node instanceof BinaryTreeNode) {
             this.error('Insertion requires a valid node');
         }
 
         // Insert into right sub-tree if greater
-        if (node.value >= this.value) {
+        if (comparator.greaterThan(node.value, this.value)) {
             if (!this.right) {
                 this.right = node;
 
             } else {
-                this.right.insert(node);
+                this.right.insert(node, comparator);
             }
 
         // Insert into left sub-tree if lower
@@ -588,7 +609,7 @@ export class BinaryTreeNode extends Node {
                 this.left = node;
 
             } else {
-                this.left.insert(node);
+                this.left.insert(node, comparator);
             }
         }
     }
@@ -716,13 +737,14 @@ export class BinaryTreeNode extends Node {
      *
      * @param {*} value - The value to remove
      * @param {BinaryTreeNode} parentNode - The parent node to modify
+     * @param {Comparator} comparator
      * @returns {Boolean}
      */
-    remove(value, parentNode) {
-        if (value === this.value) {
+    remove(value, parentNode, comparator) {
+        if (comparator.equals(value, this.value)) {
             if (this.isFull()) {
                 this.value = this.min(this.right).value;
-                this.right.remove(this.value, this);
+                this.right.remove(this.value, this, comparator);
 
             } else if (parentNode.left === this) {
                 parentNode.left = this.left || this.right || null;
@@ -734,55 +756,52 @@ export class BinaryTreeNode extends Node {
             return true;
 
         // Search right tree
-        } else if (value > this.value) {
+        } else if (comparator.greaterThan(value, this.value)) {
             if (this.right) {
-                return this.right.remove(value, this);
+                return this.right.remove(value, this, comparator);
 
             } else {
                 return false;
             }
 
         // Search left tree
-        } else if (value < this.value) {
+        } else {
             if (this.left) {
-                return this.left.remove(value, this);
+                return this.left.remove(value, this, comparator);
 
             } else {
                 return false;
             }
         }
-
-        return false;
     }
 
     /**
      * Recursively search for a node that matches the defined value, or return null if none found.
      *
      * @param {*} value
+     * @param {Comparator} comparator
      * @returns {BinaryTreeNode|null}
      */
-    search(value) {
-        if (value === this.value) {
+    search(value, comparator) {
+        if (comparator.equals(value, this.value)) {
             return this;
 
-        } else if (value > this.value) {
+        } else if (comparator.greaterThan(value, this.value)) {
             if (this.right) {
-                return this.right.search(value);
+                return this.right.search(value, comparator);
 
             } else {
                 return null;
             }
 
-        } else if (value < this.value) {
+        } else {
             if (this.left) {
-                return this.left.search(value);
+                return this.left.search(value, comparator);
 
             } else {
                 return null;
             }
         }
-
-        return null;
     }
 
     /**

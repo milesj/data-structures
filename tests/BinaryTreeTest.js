@@ -1,4 +1,5 @@
 import BinaryTree, { BinaryTreeNode, LEVEL_ORDER, IN_ORDER, POST_ORDER, PRE_ORDER } from '../src/BinaryTree';
+import { StringComparator } from '../src/Comparator';
 
 /**
  *                Full:                   Level     Depth     Height     Count     Size
@@ -438,6 +439,22 @@ describe('BinaryTree', () => {
         });
     });
 
+    describe('max()', () => {
+        it('should return null if empty', () => {
+            expect(tree.max()).toBeNull();
+        });
+
+        it('should return the max value node', () => {
+            populateTree(tree);
+
+            expect(tree.max().value).toBe(82);
+
+            tree.insert(99);
+
+            expect(tree.max().value).toBe(99);
+        });
+    });
+
     describe('maxDepth()', () => {
         it('should return -1 if the tree is empty', () => {
             expect(tree.maxDepth()).toBe(-1);
@@ -459,6 +476,22 @@ describe('BinaryTree', () => {
             tree.insert(8);
 
             expect(tree.maxDepth()).toBe(3);
+        });
+    });
+
+    describe('min()', () => {
+        it('should return null if empty', () => {
+            expect(tree.min()).toBeNull();
+        });
+
+        it('should return the max value node', () => {
+            populateTree(tree);
+
+            expect(tree.min().value).toBe(12);
+
+            tree.insert(1);
+
+            expect(tree.min().value).toBe(1);
         });
     });
 
@@ -741,18 +774,10 @@ describe('BinaryTree', () => {
         });
     });
 
-    it('should allow a custom hasher function to be used', () => {
-        tree = new BinaryTree(value => value.charCodeAt(0));
+    it('should allow a custom Comparator class to be used', () => {
+        tree = new BinaryTree(new StringComparator());
         tree.insertAll(['Miles', 'Alvin', 'Keith', 'Zach', 'Will', 'Ian', 'Chukky', 'Matt', 'Melanie']);
 
-        expect(tree.toArray()).toEqual([77, 65, 90, 75, 87, 73, 77, 67, 77]);
-
-        let names = [];
-
-        tree.traverse(function(value, node) {
-            names.push(node.data);
-        });
-
-        expect(names).toEqual(['Miles', 'Alvin', 'Zach', 'Keith', 'Will', 'Ian', 'Matt', 'Chukky', 'Melanie']);
+        expect(tree.toArray()).toEqual(['Miles', 'Alvin', 'Zach', 'Keith', 'Will', 'Ian', 'Matt', 'Chukky', 'Melanie']);
     });
 });
