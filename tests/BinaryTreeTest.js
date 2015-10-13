@@ -738,4 +738,19 @@ describe('BinaryTree', () => {
             expect(tree.toArray(POST_ORDER)).toEqual([12, 29, 23, 38, 47, 44, 35, 56, 82, 63, 50]);
         });
     });
+
+    it('should allow a custom hasher function to be used', () => {
+        tree = new BinaryTree(value => value.charCodeAt(0));
+        tree.insertAll(['Miles', 'Alvin', 'Keith', 'Zach', 'Will', 'Ian', 'Chukky', 'Matt', 'Melanie']);
+
+        expect(tree.toArray()).toEqual([77, 65, 90, 87, 75, 77, 73, 77, 67]);
+
+        let names = [];
+
+        tree.traverse(function(value, node) {
+            names.push(node.data);
+        });
+
+        expect(names).toEqual(['Miles', 'Alvin', 'Zach', 'Keith', 'Will', 'Ian', 'Matt', 'Chukky', 'Melanie']);
+    });
 });

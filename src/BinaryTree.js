@@ -7,7 +7,14 @@ export const PRE_ORDER = 'PRE_ORDER';
 export const POST_ORDER = 'POST_ORDER';
 export const LEVEL_ORDER = 'LEVEL_ORDER';
 
+const hasher = Symbol('hasher');
+
 export default class BinaryTree extends Tree {
+    constructor(func) {
+        super();
+
+        this[hasher] = (typeof func === 'function') ? func : value => value;
+    }
 
     /**
      * Returns true if the tree contains the specified value.
@@ -23,7 +30,7 @@ export default class BinaryTree extends Tree {
      * {@inheritdoc}
      */
     createNode(value) {
-        return new BinaryTreeNode(value);
+        return new BinaryTreeNode(this[hasher](value), value);
     }
 
     /**
@@ -453,11 +460,12 @@ export default class BinaryTree extends Tree {
  * @property {BinaryTreeNode|null} right
  */
 export class BinaryTreeNode extends Node {
-    constructor(value) {
+    constructor(value, data) {
         super(value);
 
         this.left = null;
         this.right = null;
+        this.data = data;
     }
 
     /**
