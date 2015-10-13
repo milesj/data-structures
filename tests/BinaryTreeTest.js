@@ -156,8 +156,8 @@ describe('BinaryTree', () => {
             expect(() => { tree.getNodesAtLevel(-1); }).toThrowError('Level out of range');
         });
 
-        it('should error if the tree is empty', () => {
-            expect(() => { tree.getNodesAtLevel(0); }).toThrowError('BinaryTree is empty');
+        it('should return an empty array if empty', () => {
+            expect(tree.getNodesAtLevel(0)).toEqual([]);
         });
 
         it('should return all nodes at a specific level', () => {
@@ -535,6 +535,8 @@ describe('BinaryTree', () => {
          *   10   20
          */
         it('should return false if value does not exist', () => {
+            expect(tree.remove(5)).toBe(false);
+
             tree.insertAll([15, 10, 20]);
 
             expect(tree.remove(5)).toBe(false);
@@ -743,7 +745,7 @@ describe('BinaryTree', () => {
         tree = new BinaryTree(value => value.charCodeAt(0));
         tree.insertAll(['Miles', 'Alvin', 'Keith', 'Zach', 'Will', 'Ian', 'Chukky', 'Matt', 'Melanie']);
 
-        expect(tree.toArray()).toEqual([77, 65, 90, 87, 75, 77, 73, 77, 67]);
+        expect(tree.toArray()).toEqual([77, 65, 90, 75, 87, 73, 77, 67, 77]);
 
         let names = [];
 

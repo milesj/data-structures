@@ -33,10 +33,8 @@ describe('Queue', () => {
     });
 
     describe('back()', () => {
-        it('should error if queue is empty', () => {
-            expect(() => {
-                queue.back();
-            }).toThrowError('Queue is empty');
+        it('should return null if empty', () => {
+            expect(queue.back()).toBeNull();
         });
 
         it('should return the value of the last element but not remove it', () => {
@@ -81,8 +79,8 @@ describe('Queue', () => {
     });
 
     describe('dequeue()', () => {
-        it('should error if queue is empty', () => {
-            expect(() => { queue.dequeue(); }).toThrowError('Queue is empty');
+        it('should return null if empty', () => {
+            expect(queue.dequeue()).toBeNull();
         });
 
         it('should reduce the index, size, and items', () => {
@@ -179,8 +177,8 @@ describe('Queue', () => {
     });
 
     describe('front()', () => {
-        it('should error if queue is empty', () => {
-            expect(() => { queue.front(); }).toThrowError('Queue is empty');
+        it('should return null if empty', () => {
+            expect(queue.front()).toBeNull();
         });
 
         it('should return the value of the first element but not remove it', () => {

@@ -48,14 +48,13 @@ export default class Stack extends Collection {
     }
 
     /**
-     * Remove and return the top (last) value in the collection.
-     * Throws an error if the collection is empty.
+     * Remove and return the top (last) value in the collection, or return null if empty.
      *
      * @returns {*}
      */
     pop() {
         if (this.isEmpty()) {
-            this.error('{class} is empty');
+            return null;
         }
 
         this.index -= 1;
@@ -112,14 +111,13 @@ export default class Stack extends Collection {
     }
 
     /**
-     * Returns the top (last) value in the collection but does not remove it.
-     * Throws an error if the collection is empty.
+     * Returns the top (last) value in the collection but does not remove it, or returns null if empty.
      *
      * @returns {*}
      */
     top() {
         if (this.isEmpty()) {
-            this.error('{class} is empty');
+            return null;
         }
 
         return this.items[this.index - 1].value;

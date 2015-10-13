@@ -94,17 +94,12 @@ export default class LinkedList extends Collection {
     }
 
     /**
-     * Returns the first value in the list but does not remove it.
-     * Throws an error if the collection is empty.
+     * Returns the first value in the list but does not remove it, or returns null if empty.
      *
      * @returns {*}
      */
     first() {
-        if (this.isEmpty()) {
-            this.error('{class} is empty');
-        }
-
-        return this.head.value;
+        return this.isEmpty() ? null : this.head.value;
     }
 
     /**
@@ -171,17 +166,12 @@ export default class LinkedList extends Collection {
     }
 
     /**
-     * Returns the last value in the list but does not remove it.
-     * Throws an error if the collection is empty.
+     * Returns the last value in the list but does not remove it, or returns null if empty.
      *
      * @returns {*}
      */
     last() {
-        if (this.isEmpty()) {
-            this.error('{class} is empty');
-        }
-
-        return this.tail.value;
+        return this.isEmpty() ? null : this.tail.value;
     }
 
     /**
@@ -251,7 +241,7 @@ export default class LinkedList extends Collection {
      */
     remove(value) {
         if (this.isEmpty()) {
-            this.error('{class} is empty');
+            return null;
 
         } else if (this.head.value === value) {
             return this.removeFirst();
@@ -288,7 +278,7 @@ export default class LinkedList extends Collection {
      */
     removeAt(index) {
         if (this.isEmpty()) {
-            this.error('{class} is empty');
+            return null;
 
         } else if (index < 0 || index >= this.size) {
             this.error('Index out of range');
@@ -323,13 +313,13 @@ export default class LinkedList extends Collection {
     }
 
     /**
-     * Remove and return the first node in the list.
+     * Remove and return the first node in the list, or null if empty.
      *
      * @returns {*}
      */
     removeFirst() {
         if (this.isEmpty()) {
-            this.error('{class} is empty');
+            return null;
         }
 
         let head = this.head;
@@ -350,13 +340,13 @@ export default class LinkedList extends Collection {
     }
 
     /**
-     * Remove and return the last node in the list.
+     * Remove and return the last node in the list, or null if empty.
      *
      * @returns {null}
      */
     removeLast() {
         if (this.isEmpty()) {
-            this.error('{class} is empty');
+            return null;
 
         } else if (this.tail === this.head) {
             return this.removeFirst();

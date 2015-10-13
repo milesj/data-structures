@@ -85,7 +85,7 @@ export default class BinaryTree extends Tree {
             this.error('Level out of range');
 
         } else if (this.isEmpty()) {
-            this.error('{class} is empty');
+            return [];
         }
 
         let queue = new Queue();
@@ -329,7 +329,7 @@ export default class BinaryTree extends Tree {
      */
     remove(value) {
         if (this.isEmpty()) {
-            this.error('{class} is empty');
+            return false;
         }
 
         let result = false;
@@ -406,7 +406,7 @@ export default class BinaryTree extends Tree {
      */
     traverse(callback, method = LEVEL_ORDER) {
         if (this.isEmpty()) {
-            this.error('{class} is empty');
+            return this;
         }
 
         switch (method) {

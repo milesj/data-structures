@@ -108,8 +108,8 @@ describe('Stack', () => {
     });
 
     describe('pop()', () => {
-        it('should error if stack is empty', () => {
-            expect(() => { stack.pop(); }).toThrowError('Stack is empty');
+        it('should return null if stack is empty', () => {
+            expect(stack.pop()).toBeNull();
         });
 
         it('should reduce the index, size, and items', () => {
@@ -221,8 +221,8 @@ describe('Stack', () => {
     });
 
     describe('top()', () => {
-        it('should error if stack is empty', () => {
-            expect(() => { stack.top(); }).toThrowError('Stack is empty');
+        it('should return null if empty', () => {
+            expect(stack.top()).toBeNull();
         });
 
         it('should return the value of the top element but not remove it', () => {

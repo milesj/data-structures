@@ -105,8 +105,8 @@ describe('LinkedList', () => {
     });
 
     describe('first()', () => {
-        it('should error if empty', () => {
-            expect(() => { list.first(); }).toThrowError('LinkedList is empty');
+        it('should return null if empty', () => {
+            expect(list.first()).toBeNull();
         });
 
         it('should return the value', () => {
@@ -187,8 +187,8 @@ describe('LinkedList', () => {
     });
 
     describe('last()', () => {
-        it('should error if empty', () => {
-            expect(() => { list.last(); }).toThrowError('LinkedList is empty');
+        it('should return null if empty', () => {
+            expect(list.last()).toBeNull();
         });
 
         it('should return the value', () => {
@@ -261,8 +261,8 @@ describe('LinkedList', () => {
     });
 
     describe('remove()', () => {
-        it('should error if the list is empty', () => {
-            expect(() => { list.remove(1); }).toThrowError('LinkedList is empty');
+        it('should return null if empty', () => {
+            expect(list.remove(1)).toBeNull();
         });
 
         it('should remove the head and reset', () => {
@@ -311,8 +311,8 @@ describe('LinkedList', () => {
     });
 
     describe('removeAt()', () => {
-        it('should error if the list is empty', () => {
-            expect(() => { list.removeAt(0); }).toThrowError('LinkedList is empty');
+        it('should return null if empty', () => {
+            expect(list.removeAt(0)).toBeNull();
         });
 
         it('should error if the index is below 0', () => {
@@ -373,8 +373,8 @@ describe('LinkedList', () => {
     });
 
     describe('removeFirst()', () => {
-        it('should error if the list is empty', () => {
-            expect(() => { list.removeFirst(); }).toThrowError('LinkedList is empty');
+        it('should return null if empty', () => {
+            expect(list.removeFirst()).toBeNull();
         });
 
         it('should reset tail if only 1 node', () => {
@@ -413,8 +413,8 @@ describe('LinkedList', () => {
     });
 
     describe('removeLast()', () => {
-        it('should error if the list is empty', () => {
-            expect(() => { list.removeLast(); }).toThrowError('LinkedList is empty');
+        it('should return null if empty', () => {
+            expect(list.removeLast()).toBeNull();
         });
 
         it('should reset head if tail and head match', () => {

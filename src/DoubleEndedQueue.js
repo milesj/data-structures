@@ -3,14 +3,13 @@ import Queue from './Queue';
 export default class DoubleEndedQueue extends Queue {
 
     /**
-     * Remove and return the last value in the collection.
-     * Throws an error if the collection is empty.
+     * Remove and return the last value in the collection, or return null if empty.
      *
      * @returns {*}
      */
     dequeueBack() {
         if (this.isEmpty()) {
-            this.error('{class} is empty');
+            return null;
         }
 
         this.index -= 1;

@@ -9,8 +9,8 @@ describe('DoubleEndedQueue', () => {
     });
 
     describe('dequeueBack()', () => {
-        it('should error if queue is empty', () => {
-            expect(() => { queue.dequeueBack(); }).toThrowError('DoubleEndedQueue is empty');
+        it('should return null if empty', () => {
+            expect(queue.dequeueBack()).toBeNull();
         });
 
         it('should reduce the index, size, and items', () => {

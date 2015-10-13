@@ -13,14 +13,13 @@ export default class Queue extends Collection {
     }
 
     /**
-     * Returns the last value in the collection but does not remove it.
-     * Throws an error if the collection is empty.
+     * Returns the last value in the collection but does not remove it, or returns null if empty.
      *
      * @returns {*}
      */
     back() {
         if (this.isEmpty()) {
-            this.error('{class} is empty');
+            return null;
         }
 
         return this.items[this.index - 1].value;
@@ -37,14 +36,13 @@ export default class Queue extends Collection {
     }
 
     /**
-     * Remove and return the first value in the collection.
-     * Throws an error if the collection is empty.
+     * Remove and return the first value in the collection, or returns null if empty.
      *
      * @returns {*}
      */
     dequeue() {
         if (this.isEmpty()) {
-            this.error('{class} is empty');
+            return null;
         }
 
         this.index -= 1;
@@ -108,7 +106,7 @@ export default class Queue extends Collection {
      */
     front() {
         if (this.isEmpty()) {
-            this.error('{class} is empty');
+            return null;
         }
 
         return this.items[0].value;

@@ -15,7 +15,7 @@ export default class DoublyLinkedList extends LinkedList {
      */
     removeLast() {
         if (this.isEmpty()) {
-            this.error('{class} is empty');
+            return null;
 
         } else if (this.tail === this.head) {
             return this.removeFirst();
