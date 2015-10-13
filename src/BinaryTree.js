@@ -146,7 +146,22 @@ export default class BinaryTree extends Tree {
      * @return {Boolean}
      */
     isComplete() {
+        let complete = true,
+            flag = false;
 
+        this.traverse(function(value, node) {
+            if (node.left || node.right) {
+                if (flag === true) {
+                    complete = false;
+                    return true; // Exit
+                }
+
+            } else {
+                flag = true;
+            }
+        });
+
+        return complete;
     }
 
     /**
@@ -289,33 +304,6 @@ export default class BinaryTree extends Tree {
      */
     maxDepth() {
         return this.isEmpty() ? -1 : this.root.height();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    maxLevel() {
-        if (this.isEmpty()) {
-            return -1;
-        }
-
-        let curLevel = 0,
-            nextLevel = 1,
-            i = 0;
-
-        this.traverse(function() {
-            // Go to next level
-            if (i === nextLevel) {
-                curLevel += 1;
-                nextLevel *= 2;
-                i = 0;
-            }
-
-            // Increase count for this level
-            i++;
-        });
-
-        return curLevel;
     }
 
     /**
@@ -487,6 +475,7 @@ export class BinaryTreeNode extends Node {
         } else if (value > this.value) {
             if (this.right) {
                 depth = this.right.depth(value);
+
             } else {
                 return -1;
             }
@@ -494,6 +483,7 @@ export class BinaryTreeNode extends Node {
         } else if (value < this.value) {
             if (this.left) {
                 depth = this.left.depth(value);
+
             } else {
                 return -1;
             }
@@ -579,6 +569,7 @@ export class BinaryTreeNode extends Node {
         if (node.value >= this.value) {
             if (!this.right) {
                 this.right = node;
+
             } else {
                 this.right.insert(node);
             }
@@ -587,6 +578,7 @@ export class BinaryTreeNode extends Node {
         } else {
             if (!this.left) {
                 this.left = node;
+
             } else {
                 this.left.insert(node);
             }
@@ -650,19 +642,21 @@ export class BinaryTreeNode extends Node {
     /**
      * Returns the node with the highest value found in the descendant tree.
      *
-     * @returns {BinaryTreeNode|null}
+     * @param {BinaryTreeNode} node
+     * @returns {BinaryTreeNode}
      */
-    max() {
-        return this.right ? this.right.max() : this;
+    max(node) {
+        return node.right ? this.max(node.right) : node;
     }
 
     /**
      * Returns the node with the lowest value found in the descendant tree.
      *
-     * @returns {BinaryTreeNode|null}
+     * @param {BinaryTreeNode} node
+     * @returns {BinaryTreeNode}
      */
-    min() {
-        return this.left ? this.left.min() : this;
+    min(node) {
+        return node.left ? this.min(node.left) : node;
     }
 
     /**
@@ -719,7 +713,7 @@ export class BinaryTreeNode extends Node {
     remove(value, parentNode) {
         if (value === this.value) {
             if (this.isFull()) {
-                this.value = this.right.min();
+                this.value = this.min(this.right).value;
                 this.right.remove(this.value, this);
 
             } else if (parentNode.left === this) {
@@ -735,6 +729,7 @@ export class BinaryTreeNode extends Node {
         } else if (value > this.value) {
             if (this.right) {
                 return this.right.remove(value, this);
+
             } else {
                 return false;
             }
@@ -743,6 +738,7 @@ export class BinaryTreeNode extends Node {
         } else if (value < this.value) {
             if (this.left) {
                 return this.left.remove(value, this);
+
             } else {
                 return false;
             }
@@ -764,6 +760,7 @@ export class BinaryTreeNode extends Node {
         } else if (value > this.value) {
             if (this.right) {
                 return this.right.search(value);
+
             } else {
                 return null;
             }
@@ -771,6 +768,7 @@ export class BinaryTreeNode extends Node {
         } else if (value < this.value) {
             if (this.left) {
                 return this.left.search(value);
+
             } else {
                 return null;
             }
@@ -785,7 +783,7 @@ export class BinaryTreeNode extends Node {
      * @returns {Number}
      */
     size() {
-        let size = 0;
+        let size = 1;
 
         if (this.left) {
             size += this.left.size();
@@ -795,6 +793,6 @@ export class BinaryTreeNode extends Node {
             size += this.right.size();
         }
 
-        return size + 1;
+        return size;
     }
 }

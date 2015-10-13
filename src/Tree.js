@@ -72,13 +72,4 @@ export default class Tree extends Structure {
     maxHeight() {
         return this.maxDepth();
     }
-
-    /**
-     * Calculate the max number of levels in the tree.
-     *
-     * @returns {Number}
-     */
-    maxLevel() {
-        return -1;
-    }
 }

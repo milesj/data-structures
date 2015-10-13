@@ -105,6 +105,20 @@ describe('BinaryTree', () => {
         });
     });
 
+    describe('empty()', () => {
+        it('should delete all nodes', () => {
+            expect(tree.isEmpty()).toBe(true);
+
+            tree.insert(10).insert(5);
+
+            expect(tree.isEmpty()).toBe(false);
+
+            tree.empty();
+
+            expect(tree.isEmpty()).toBe(true);
+        });
+    });
+
     describe('getInternalNodes', () => {
         it('should return all the internal nodes', () => {
             populateTree(tree);
@@ -235,7 +249,35 @@ describe('BinaryTree', () => {
     });
 
     describe('isComplete()', () => {
-        // TODO
+        it('should return true for a single root node', () => {
+            tree.insert(10);
+
+            expect(tree.isComplete()).toBe(true);
+        });
+
+        it('should return true if the tree is full and points to the left', () => {
+            populateTree(tree);
+
+            tree.insert(100); // Skew it
+
+            expect(tree.isComplete()).toBe(false);
+
+            populateTree(tree, true);
+
+            expect(tree.isComplete()).toBe(true);
+
+            populateTree(tree, true, true);
+
+            expect(tree.isComplete()).toBe(true);
+
+            tree.insert(1); // Still on left side
+
+            expect(tree.isComplete()).toBe(true);
+
+            tree.insert(100); // Skew it
+
+            expect(tree.isComplete()).toBe(false);
+        });
     });
 
     describe('isFull()', () => {
@@ -358,6 +400,12 @@ describe('BinaryTree', () => {
     });
 
     describe('isStrict()', () => {
+        it('should return true for a single root node', () => {
+            tree.insert(10);
+
+            expect(tree.isStrict()).toBe(true);
+        });
+
         /**
          *                25
          *             /      \
@@ -387,6 +435,307 @@ describe('BinaryTree', () => {
             tree.insert(1);
 
             expect(tree.isStrict()).toBe(false);
+        });
+    });
+
+    describe('maxDepth()', () => {
+        it('should return -1 if the tree is empty', () => {
+            expect(tree.maxDepth()).toBe(-1);
+        });
+
+        it('should return the depth of the whole tree', () => {
+            tree.insert(25);
+
+            expect(tree.maxDepth()).toBe(0);
+
+            tree.insert(15);
+
+            expect(tree.maxDepth()).toBe(1);
+
+            tree.insert(12);
+
+            expect(tree.maxDepth()).toBe(2);
+
+            tree.insert(8);
+
+            expect(tree.maxDepth()).toBe(3);
+        });
+    });
+
+    describe('remove()', () => {
+        /**
+         *      1
+         *
+         *    After:
+         *
+         *    (null)
+         */
+        it('should set the root to null if only 1 node in the tree', () => {
+            tree.insert(1);
+
+            expect(tree.root.value).toBe(1);
+            expect(tree.size).toBe(1);
+
+            let result = tree.remove(1);
+
+            expect(result).toBe(true);
+            expect(tree.root).toBeNull();
+            expect(tree.size).toBe(0);
+        });
+
+        /**
+         *      15
+         *     /  \
+         *   10   20
+         *
+         *    After:
+         *
+         *      20
+         *     /
+         *   10
+         */
+        it('should set the root to the right child if removing the root', () => {
+            tree.insertAll([15, 10, 20]);
+
+            expect(tree.root.value).toBe(15);
+            expect(tree.size).toBe(3);
+
+            let result = tree.remove(15);
+
+            expect(result).toBe(true);
+            expect(tree.root.value).toBe(20);
+            expect(tree.size).toBe(2);
+        });
+
+        /**
+         *      15
+         *     /
+         *   10
+         *
+         *    After:
+         *
+         *      10
+         */
+        it('should set the root to the left child if removing the root and no right child', () => {
+            tree.insertAll([15, 10]);
+
+            expect(tree.root.value).toBe(15);
+            expect(tree.size).toBe(2);
+
+            let result = tree.remove(15);
+
+            expect(result).toBe(true);
+            expect(tree.root.value).toBe(10);
+            expect(tree.size).toBe(1);
+        });
+
+        /**
+         *      15
+         *     /  \
+         *   10   20
+         */
+        it('should return false if value does not exist', () => {
+            tree.insertAll([15, 10, 20]);
+
+            expect(tree.remove(5)).toBe(false);
+            expect(tree.remove(25)).toBe(false);
+        });
+
+        /**
+         *      15
+         *     /  \
+         *   10   20
+         *
+         *    After:
+         *
+         *      15
+         *        \
+         *        20
+         */
+        it('should set the parent link to null if node has no children', () => {
+            tree.insertAll([15, 10, 20]);
+
+            expect(tree.toArray()).toEqual([15, 10, 20]);
+
+            let result = tree.remove(10);
+
+            expect(result).toBe(true);
+            expect(tree.toArray()).toEqual([15, 20]);
+            expect(tree.root.left).toBeNull();
+
+            result = tree.remove(20);
+
+            expect(result).toBe(true);
+            expect(tree.toArray()).toEqual([15]);
+            expect(tree.root.isEmpty()).toBe(true);
+        });
+
+        /**
+         *      15
+         *     /  \
+         *   10   20
+         *          \
+         *          25
+         *
+         *    After:
+         *
+         *      15
+         *     /  \
+         *   10   25
+         */
+        it('should set the parent right link to the child if the node has 1 child', () => {
+            tree.insertAll([15, 10, 20, 25]);
+
+            expect(tree.toArray()).toEqual([15, 10, 20, 25]);
+            expect(tree.root.right.value).toBe(20);
+
+            let result = tree.remove(20);
+
+            expect(result).toBe(true);
+            expect(tree.toArray()).toEqual([15, 10, 25]);
+            expect(tree.root.right.value).toBe(25);
+
+            result = tree.remove(25);
+
+            expect(result).toBe(true);
+            expect(tree.toArray()).toEqual([15, 10]);
+            expect(tree.root.right).toBeNull();
+        });
+
+        /**
+         *      15
+         *     /  \
+         *   10   20
+         *        /
+         *      17
+         *
+         *    After:
+         *
+         *      15
+         *     /  \
+         *   10   17
+         */
+        it('should set the parent left link to the child if the node has 1 child', () => {
+            tree.insertAll([15, 10, 20, 17]);
+
+            expect(tree.toArray()).toEqual([15, 10, 20, 17]);
+            expect(tree.root.right.value).toBe(20);
+
+            let result = tree.remove(20);
+
+            expect(result).toBe(true);
+            expect(tree.toArray()).toEqual([15, 10, 17]);
+            expect(tree.root.right.value).toBe(17);
+
+            result = tree.remove(17);
+
+            expect(result).toBe(true);
+            expect(tree.toArray()).toEqual([15, 10]);
+            expect(tree.root.right).toBeNull();
+        });
+
+        /**
+         *         15
+         *        /  \
+         *      10   20
+         *     /    /  \
+         *   8    18   25
+         *            /  \
+         *          21   29
+         *
+         *       After:
+         *
+         *         15
+         *        /  \
+         *      10   21
+         *     /    /  \
+         *   8    18   25
+         *               \
+         *               29
+         */
+        it('should set the parent link to the lowest value if the node has 2 children', () => {
+            tree.insertAll([15, 10, 20, 8, 18, 25, 21, 29]);
+
+            expect(tree.toArray()).toEqual([15, 10, 20, 8, 18, 25, 21, 29]);
+
+            let result = tree.remove(20);
+
+            expect(result).toBe(true);
+            expect(tree.toArray()).toEqual([15, 10, 21, 8, 18, 25, 29]);
+        });
+    });
+
+    describe('removeAll()', () => {
+        it('should remove multiple values', () => {
+            populateTree(tree);
+
+            expect(tree.toArray()).toEqual([50, 35, 63, 23, 56, 82, 12]);
+
+            tree.removeAll([82, 63, 23]);
+
+            expect(tree.toArray()).toEqual([50, 35, 56, 12]);
+        });
+    });
+
+    describe('size()', () => {
+        it('should return the size of tree', () => {
+            populateTree(tree);
+
+            expect(tree.size).toBe(7);
+
+            let node = tree.search(35);
+
+            expect(node.size()).toBe(3);
+
+            populateTree(tree, true);
+
+            expect(tree.size).toBe(11);
+
+            node = tree.search(35);
+
+            expect(node.size()).toBe(7);
+
+            populateTree(tree, true, true);
+
+            expect(tree.size).toBe(15);
+
+            node = tree.search(82);
+
+            expect(node.size()).toBe(3);
+        });
+    });
+
+    describe('search()', () => {
+        it('should return null if tree is empty', () => {
+            expect(tree.search(1)).toBeNull();
+        });
+
+        it('should return null if not found', () => {
+            populateTree(tree);
+
+            expect(tree.search(100)).toBeNull();
+        });
+
+        it('should return the node if found', () => {
+            populateTree(tree);
+
+            let node = tree.search(23);
+
+            expect(node instanceof BinaryTreeNode).toBe(true);
+            expect(node.value).toBe(23);
+            expect(node.left.value).toBe(12);
+            expect(node.right).toBeNull();
+        });
+    });
+
+    describe('toArray()', () => {
+        it('should return an array in order depending on the method', () => {
+            populateTree(tree, true);
+
+            expect(tree.toArray(LEVEL_ORDER)).toEqual([50, 35, 63, 23, 44, 56, 82, 12, 29, 38, 47]);
+            expect(tree.toArray(IN_ORDER)).toEqual([12, 23, 29, 35, 38, 44, 47, 50, 56, 63, 82]);
+            expect(tree.toArray(PRE_ORDER)).toEqual([50, 35, 23, 12, 29, 44, 38, 47, 63, 56, 82]);
+            expect(tree.toArray(POST_ORDER)).toEqual([12, 29, 23, 38, 47, 44, 35, 56, 82, 63, 50]);
         });
     });
 });
