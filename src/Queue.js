@@ -1,4 +1,4 @@
-import Collection from './Collection';
+import Collection from './adt/Collection';
 
 /**
  * @property {Number} index

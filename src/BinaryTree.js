@@ -1,4 +1,4 @@
-import Tree from './Tree';
+import Tree from './adt/Tree';
 import Node from './Node';
 import Queue from './Queue';
 
