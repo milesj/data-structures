@@ -249,6 +249,26 @@ describe('BinaryTree', () => {
         });
     });
 
+    describe('isBST()', () => {
+        /**
+         *          6
+         *         / \
+         *        2   8
+         *       / \
+         *      1  (9)
+         */
+        it('should return true if the tree is a BST', () => {
+            tree.insertAll([6, 2, 8, 1]);
+
+            expect(tree.isBST()).toBe(true);
+
+            // Fake a node
+            tree.root.left.right = new BinaryTreeNode(9);
+
+            expect(tree.isBST()).toBe(false);
+        });
+    });
+
     describe('isComplete()', () => {
         it('should return true for a single root node', () => {
             tree.insert(10);

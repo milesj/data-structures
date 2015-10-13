@@ -149,9 +149,27 @@ export default class BinaryTree extends Tree {
     }
 
     /**
+     * Returns true if the tree is a valid binary search tree.
+     *
+     * @returns {Boolean}
+     */
+    isBST() {
+        if (this.isEmpty()) {
+            return true;
+        }
+
+        let root = this.root,
+            maxLeft = root.left ? root.max(root.left) : 0,
+            minRight = root.right ? root.min(root.right) : root.value + 1,
+            compare = this[comparator];
+
+        return (compare.lessThanEquals(maxLeft.value, root.value) && compare.greaterThan(minRight.value, root.value));
+    }
+
+    /**
      * Returns true if every level is full (excluding the last), and the last points to the left.
      *
-     * @return {Boolean}
+     * @returns {Boolean}
      */
     isComplete() {
         let complete = true,
@@ -175,7 +193,7 @@ export default class BinaryTree extends Tree {
     /**
      * Returns true if every node has 2 children (excluding leaf nodes).
      *
-     * @return {Boolean}
+     * @returns {Boolean}
      */
     isFull() {
         let full = true;
@@ -196,7 +214,7 @@ export default class BinaryTree extends Tree {
     /**
      * Returns true if every node (excluding leaf nodes) has only 1 child.
      *
-     * @return {Boolean}
+     * @returns {Boolean}
      */
     isSkewed() {
         if (this.size === 1) {
@@ -221,7 +239,7 @@ export default class BinaryTree extends Tree {
     /**
      * Returns true if every node (excluding leaf nodes) has only 1 child and points to the left.
      *
-     * @return {Boolean}
+     * @returns {Boolean}
      */
     isSkewedLeft() {
         if (this.size === 1) {
@@ -246,7 +264,7 @@ export default class BinaryTree extends Tree {
     /**
      * Returns true if every node (excluding leaf nodes) has only 1 child and points to the right.
      *
-     * @return {Boolean}
+     * @returns {Boolean}
      */
     isSkewedRight() {
         if (this.size === 1) {
@@ -271,7 +289,7 @@ export default class BinaryTree extends Tree {
     /**
      * Returns true if every node has either 0 children or 2 children.
      *
-     * @return {Boolean}
+     * @returns {Boolean}
      */
     isStrict() {
         let strict = true;
@@ -484,7 +502,10 @@ export class BinaryTreeNode extends Node {
 
         this.left = null;
         this.right = null;
-        this.data = data;
+
+        if (data !== value) {
+            this.data = data;
+        }
     }
 
     /**
