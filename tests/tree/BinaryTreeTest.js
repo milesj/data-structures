@@ -1,5 +1,5 @@
-import BinaryTree, { BinaryTreeNode, LEVEL_ORDER, IN_ORDER, POST_ORDER, PRE_ORDER } from '../src/BinaryTree';
-import { StringComparator } from '../src/Comparator';
+import BinaryTree, { BinaryTreeNode, LEVEL_ORDER, IN_ORDER, POST_ORDER, PRE_ORDER } from '../../src/tree/BinaryTree';
+import { StringComparator } from '../../src/Comparator';
 
 /**
  *                Full:                   Level     Depth     Height     Count     Size

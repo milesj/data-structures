@@ -1,5 +1,5 @@
 import LinkedList from './LinkedList';
-import Node from './Node';
+import Node from '../Node';
 
 export default class DoublyLinkedList extends LinkedList {
 

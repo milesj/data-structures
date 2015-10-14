@@ -1,7 +1,7 @@
-import Tree from './adt/Tree';
-import Node from './Node';
-import Queue from './Queue';
-import Comparator from './Comparator';
+import Tree from './Tree';
+import Node from '../Node';
+import Queue from '../queue/Queue';
+import Comparator from '../Comparator';
 
 export const IN_ORDER = 'IN_ORDER';
 export const PRE_ORDER = 'PRE_ORDER';

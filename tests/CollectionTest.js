@@ -1,4 +1,4 @@
-import Collection from '../src/adt/Collection';
+import Collection from '../src/Collection';
 import Node from '../src/Node';
 
 describe('Collection', () => {

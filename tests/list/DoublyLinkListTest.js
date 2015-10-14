@@ -1,4 +1,4 @@
-import DoublyLinkedList, { DoublyLinkedListNode } from '../src/DoublyLinkedList';
+import DoublyLinkedList, { DoublyLinkedListNode } from '../../src/list/DoublyLinkedList';
 
 describe('DoublyLinkedList', () => {
     let list = null;

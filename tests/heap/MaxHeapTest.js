@@ -1,4 +1,4 @@
-import MaxHeap from '../src/MaxHeap';
+import MaxHeap from '../../src/heap/MaxHeap';
 
 describe('MaxHeap', () => {
     let heap = null;

@@ -1,5 +1,5 @@
-import DoubleEndedQueue from '../src/DoubleEndedQueue';
-import Node from '../src/Node';
+import DoubleEndedQueue from '../../src/queue/DoubleEndedQueue';
+import Node from '../../src/Node';
 
 describe('DoubleEndedQueue', () => {
     let queue = null;

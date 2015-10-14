@@ -1,4 +1,4 @@
-import Structure from '../src/adt/Structure';
+import Structure from '../src/Structure';
 import Node from '../src/Node';
 
 describe('Structure', () => {

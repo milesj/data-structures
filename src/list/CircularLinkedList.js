@@ -1,5 +1,5 @@
-import Node from './Node';
 import LinkedList from './LinkedList';
+import Node from '../Node';
 
 export default class CircularLinkedList extends LinkedList {
 

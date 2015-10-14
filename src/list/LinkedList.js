@@ -1,5 +1,5 @@
-import Collection from './adt/Collection';
-import Node from './Node';
+import Collection from '../Collection';
+import Node from '../Node';
 
 /**
  * @property {LinkedListNode|null} head

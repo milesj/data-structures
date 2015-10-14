@@ -1,5 +1,5 @@
-import Stack from '../src/Stack';
-import Node from '../src/Node';
+import Stack from '../../src/stack/Stack';
+import Node from '../../src/Node';
 
 describe('Stack', () => {
     let stack = null;

@@ -1,5 +1,5 @@
-import CircularLinkedList from '../src/CircularLinkedList';
-import { LinkedListNode } from '../src/LinkedList';
+import CircularLinkedList from '../../src/list/CircularLinkedList';
+import { LinkedListNode } from '../../src/list/LinkedList';
 
 describe('CircularLinkedList', () => {
     let list = null;

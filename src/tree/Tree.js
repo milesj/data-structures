@@ -1,4 +1,4 @@
-import Structure from './Structure';
+import Structure from '../Structure';
 
 /**
  * @property {Node|null} root

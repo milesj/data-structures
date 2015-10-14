@@ -1,4 +1,4 @@
-import LinkedList, { LinkedListNode } from '../src/LinkedList';
+import LinkedList, { LinkedListNode } from '../../src/list/LinkedList';
 
 describe('LinkedList', () => {
     let list = null;

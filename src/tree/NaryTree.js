@@ -1,4 +1,4 @@
-import Tree from './adt/Tree';
+import Tree from './Tree';
 
 export default class NaryTree extends Tree {
     // TODO

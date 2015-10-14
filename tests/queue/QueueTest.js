@@ -1,5 +1,5 @@
-import Queue from '../src/Queue';
-import Node from '../src/Node';
+import Queue from '../../src/queue/Queue';
+import Node from '../../src/Node';
 
 describe('Queue', () => {
     let queue = null;

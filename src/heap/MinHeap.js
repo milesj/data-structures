@@ -1,4 +1,4 @@
-import Heap, { MIN } from './adt/Heap';
+import Heap, { MIN } from './Heap';
 
 export default class MinHeap extends Heap {
     constructor(capacity = 0, arity = 2) {

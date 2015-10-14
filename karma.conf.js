@@ -3,13 +3,13 @@ module.exports = function(config) {
         basePath: '',
         frameworks: ['browserify', 'jasmine'],
         files: [
-            'src/*.js',
-            'tests/*.js'
+            'src/**/*.js',
+            'tests/**/*.js'
         ],
         exclude: [],
         preprocessors: {
-            'src/*.js': ['browserify'],
-            'tests/*.js': ['browserify']
+            'src/**/*.js': ['browserify'],
+            'tests/**/*.js': ['browserify']
         },
         reporters: ['progress'],
         port: 9876,
