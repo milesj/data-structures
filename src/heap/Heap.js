@@ -7,20 +7,8 @@ import Collection from '../Collection';
  * All node keys used for comparisons must be an integer or float.
  *
  * @abstract
- * @property {Number} capacity
  */
 export default class Heap extends Collection {
-
-    /**
-     * Set the capacity limit. If the capacity is 0, there is no limit.
-     *
-     * @param {Number} [capacity]
-     */
-    constructor(capacity = 0) {
-        super();
-
-        this.capacity = capacity;
-    }
 
     /**
      * Compare the current node against its parent node.
@@ -33,15 +21,6 @@ export default class Heap extends Collection {
      */
     compare(node, parentNode) {
         this.error('{class} compare() must be implemented');
-    }
-
-    /**
-     * Return true if a capacity is set, and the capacity is full.
-     *
-     * @returns {Boolean}
-     */
-    isFull() {
-        return (this.capacity > 0 && this.size >= this.capacity);
     }
 
     /**

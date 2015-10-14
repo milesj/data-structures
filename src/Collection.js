@@ -4,13 +4,21 @@ import Structure from './Structure';
  * A `Collection` is an abstract class that defines a collection of nodes.
  *
  * @abstract
+ * @property {Number} capacity
  * @property {Node[]} items
  * @property {Number} size
  */
 export default class Collection extends Structure {
-    constructor() {
+
+    /**
+     * Set the capacity limit. If the capacity is 0, there is no limit.
+     *
+     * @param {Number} [capacity]
+     */
+    constructor(capacity = 0) {
         super();
 
+        this.capacity = capacity;
         this.items = [];
         this.size = 0;
     }
@@ -53,6 +61,15 @@ export default class Collection extends Structure {
      */
     isEmpty() {
         return (this.size === 0);
+    }
+
+    /**
+     * Return true if a capacity is set, and the capacity is full.
+     *
+     * @returns {Boolean}
+     */
+    isFull() {
+        return (this.capacity > 0 && this.size >= this.capacity);
     }
 
     /**

@@ -6,20 +6,18 @@ import Collection from '../Collection';
  * This is also known as a first in first out approach (FIFO).
  *
  * @property {Number} index
- * @property {Number} capacity
  */
 export default class Queue extends Collection {
 
     /**
-     * Set the capacity limit. If the capacity is 0, there is no limit.
+     * Set the capacity limit and starting index.
      *
      * @param {Number} [capacity]
      */
     constructor(capacity = 0) {
-        super();
+        super(capacity);
 
         this.index = 0;
-        this.capacity = capacity;
     }
 
     /**
@@ -127,14 +125,5 @@ export default class Queue extends Collection {
         }
 
         return -1;
-    }
-
-    /**
-     * Return true if a capacity is set, and the capacity is full.
-     *
-     * @returns {Boolean}
-     */
-    isFull() {
-        return (this.capacity > 0 && this.size >= this.capacity);
     }
 }
