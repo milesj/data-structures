@@ -1,10 +1,10 @@
-import MaxHeap from '../../src/heap/MaxHeap';
+import MinHeap from '../../src/heap/MinHeap';
 
-describe('MaxHeap', () => {
+describe('MinHeap', () => {
     let heap = null;
 
     beforeEach(() => {
-        heap = new MaxHeap();
+        heap = new MinHeap();
     });
 
     describe('iterator()', () => {
@@ -27,7 +27,7 @@ describe('MaxHeap', () => {
                 array.push(value);
             }
 
-            expect(array).toEqual([15, 11, 9, 6]);
+            expect(array).toEqual([6, 11, 9, 15]);
         });
     });
 
@@ -73,17 +73,17 @@ describe('MaxHeap', () => {
         });
     });
 
-    describe('max()', () => {
+    describe('min()', () => {
         it('should return null if empty', () => {
-            expect(heap.max()).toBeNull();
+            expect(heap.min()).toBeNull();
         });
 
-        it('should return the max value but not remove it', () => {
+        it('should return the min value but not remove it', () => {
             heap.pushAll([14, 20, 32]);
 
-            let value = heap.max();
+            let value = heap.min();
 
-            expect(value).toBe(32);
+            expect(value).toBe(14);
             expect(heap.size).toBe(3);
         });
     });
@@ -100,10 +100,10 @@ describe('MaxHeap', () => {
 
             let value = heap.pop();
 
-            expect(value).toBe(15);
+            expect(value).toBe(10);
             expect(heap.size).toBe(1);
-            expect(heap.items[0].value).toBe(10);
-            expect(heap.toArray()).toEqual([10]);
+            expect(heap.items[0].value).toBe(15);
+            expect(heap.toArray()).toEqual([15]);
         });
 
         /**
@@ -114,13 +114,13 @@ describe('MaxHeap', () => {
 
             let value = heap.pop();
 
-            expect(value).toBe(35);
-            expect(heap.toArray()).toEqual([34, 26, 33, 15, 24, 5, 4, 12, 1, 23, 21, 2]);
+            expect(value).toBe(1);
+            expect(heap.toArray()).toEqual([2, 4, 5, 12, 21, 15, 33, 35, 24, 26, 23, 34]);
 
             value = heap.pop();
 
-            expect(value).toBe(34);
-            expect(heap.toArray()).toEqual([33, 26, 5, 15, 24, 2, 4, 12, 1, 23, 21]);
+            expect(value).toBe(2);
+            expect(heap.toArray()).toEqual([4, 12, 5, 24, 21, 15, 33, 35, 34, 26, 23]);
         });
     });
 
@@ -128,11 +128,11 @@ describe('MaxHeap', () => {
         it('should remove multiple values', () => {
             heap.pushAll([30, 2, 45, 23, 15, 11, 6, 10]);
 
-            expect(heap.toArray()).toEqual([45, 23, 30, 10, 15, 11, 6, 2]);
+            expect(heap.toArray()).toEqual([2, 10, 6, 15, 23, 45, 11, 30]);
 
             let values = heap.popAll();
 
-            expect(values).toEqual([45, 30, 23, 15, 11, 10, 6, 2]);
+            expect(values).toEqual([2, 6, 10, 11, 15, 23, 30, 45]);
         });
     });
 
@@ -143,7 +143,7 @@ describe('MaxHeap', () => {
 
             expect(heap.size).toBe(1);
 
-            expect(() => { heap.push(2); }).toThrowError('MaxHeap is full');
+            expect(() => { heap.push(2); }).toThrowError('MinHeap is full');
         });
 
         it('should set the first value to the 0 index if empty', () => {
@@ -156,16 +156,16 @@ describe('MaxHeap', () => {
         it('should push a value and bubble up', () => {
             heap.push(50).push(22).push(42).push(13).push(33).push(48);
 
-            expect(heap.toArray()).toEqual([50, 33, 48, 13, 22, 42]);
+            expect(heap.toArray()).toEqual([13, 22, 42, 50, 33, 48]);
             expect(heap.size).toBe(6);
         });
     });
 
     describe('pushAll()', () => {
         it('should push multiple values', () => {
-            heap.pushAll([17, 1, 4, 6, 15, 4, 3]);
+            heap.pushAll([15, 11, 12, 16, 17, 14, 13]);
 
-            expect(heap.toArray()).toEqual([17, 15, 4, 1, 6, 4, 3]);
+            expect(heap.toArray()).toEqual([11, 15, 12, 16, 17, 14, 13]);
             expect(heap.size).toBe(7);
         });
     });
@@ -177,12 +177,12 @@ describe('MaxHeap', () => {
 
         heap.pushAll([foo, bar, baz]);
 
-        expect(heap.toArray()).toEqual([baz, foo, bar]);
-        expect(heap.max()).toBe(baz);
+        expect(heap.toArray()).toEqual([foo, bar, baz]);
+        expect(heap.min()).toBe(foo);
 
         let value = heap.pop();
 
-        expect(value).toBe(baz);
-        expect(heap.max()).toBe(bar);
+        expect(value).toBe(foo);
+        expect(heap.min()).toBe(bar);
     });
 });

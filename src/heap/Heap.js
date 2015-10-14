@@ -1,33 +1,38 @@
 import Collection from '../Collection';
 
-export const MAX = 'MAX';
-export const MIN = 'MIN';
-
 /**
- * A binary heap with built-in support for both min and max heaps.
+ * A `Heap` is an abstract binary tree-based data structure (using array indices) that satisfies the heap property:
+ * A parent node must have a greater (or lower) value than that of its children.
  *
+ * All node keys used for comparisons must be an integer or float.
+ *
+ * @abstract
  * @property {Number} capacity
- * @property {Number} arity
- * @property {String} type
  */
 export default class Heap extends Collection {
-    constructor(type, capacity = 0) {
+
+    /**
+     * Set the capacity limit. If the capacity is 0, there is no limit.
+     *
+     * @param {Number} [capacity]
+     */
+    constructor(capacity = 0) {
         super();
 
-        if (type !== MIN && type !== MAX) {
-            this.error('Invalid heap type');
-        }
-
         this.capacity = capacity;
-        this.type = type;
     }
 
+    /**
+     * Compare the current node against its parent node.
+     * If a max heap, the return will be true if the node is larger than the parent.
+     * If a min heap, the return will be true if the node is smaller than the parent.
+     *
+     * @param {Node} node
+     * @param {Node} parentNode
+     * @returns {Boolean}
+     */
     compare(node, parentNode) {
-        if (this.type === MAX) {
-            return (parentNode && node.value > parentNode.value);
-        }
-
-        return (parentNode && node.value < parentNode.value);
+        this.error('{class} compare() must be implemented');
     }
 
     /**
@@ -40,52 +45,8 @@ export default class Heap extends Collection {
     }
 
     /**
-     * Return the left child index for the defined index, or -1 if invalid.
-     *
-     * @param {Number} index
-     * @returns {Number}
-     */
-    leftChildIndex(index) {
-        let left = (index * 2 + 1);
-
-        return (left >= this.size) ? -1 : left;
-    }
-
-    /**
-     * Return the parent index for the defined index, or -1 if invalid.
-     *
-     * @param {Number} index
-     * @returns {Number}
-     */
-    parentIndex(index) {
-        return (index <= 0 || index >= this.size) ? -1 : Math.floor((index - 1) / 2);
-    }
-
-    percolate(index) {
-        let leftIndex = this.leftChildIndex(index),
-            rightIndex = this.rightChildIndex(index),
-            top = index;
-
-        if (leftIndex >= 0 && this.compare(this.items[leftIndex], this.items[index])) {
-            top = leftIndex;
-        }
-
-        if (rightIndex >= 0 && this.compare(this.items[rightIndex], this.items[top])) {
-            top = rightIndex;
-        }
-
-        if (top !== index) {
-            let temp = this.items[index];
-
-            this.items[index] = this.items[top];
-            this.items[top] = temp;
-        }
-
-        return this;
-    }
-
-    /**
-     * Remove and return the top (min or max) value in the heap, or return null if empty.
+     * Remove and return the top (min or max) value in the heap and continually bubble values down
+     * until they satisfy the "heap property", or return null if empty.
      *
      * @returns {*}
      */
@@ -94,22 +55,67 @@ export default class Heap extends Collection {
             return null;
         }
 
-        let top = this.items[0];
+        let node = this.items[0];
+
+        // Move last item to the top
+        this.items[0] = this.items.pop();
 
         // Decrease size
         this.size -= 1;
 
-        // Move last element to top
-        this.items[0] = this.items[this.size];
+        // Bubble downwards
+        let index = 0,
+            leftIndex,
+            rightIndex,
+            largestIndex;
 
-        // Re-order
-        this.percolate(0);
+        while (true) {
+            leftIndex = leftChildIndex(index);
+            rightIndex = rightChildIndex(index);
+            largestIndex = index;
 
-        return top.value;
+            if (leftIndex < this.size && this.compare(this.items[leftIndex], this.items[largestIndex])) {
+                largestIndex = leftIndex;
+            }
+
+            if (rightIndex < this.size && this.compare(this.items[rightIndex], this.items[largestIndex])) {
+                largestIndex = rightIndex;
+            }
+
+            if (largestIndex !== index) {
+                let temp = this.items[index];
+
+                this.items[index] = this.items[largestIndex];
+                this.items[largestIndex] = temp;
+
+                index = largestIndex;
+            } else {
+                break;
+            }
+        }
+
+        return node.value;
     }
 
     /**
-     * Push a value onto the heap and continually percolate values up until they are somewhat ordered.
+     * Remove and return an array of all values in the heap.
+     * Will return them in the pop order.
+     *
+     * @returns {*[]}
+     */
+    popAll() {
+        let values = [];
+
+        while (this.size) {
+            values.push(this.pop());
+        }
+
+        return values;
+    }
+
+    /**
+     * Push a value onto the heap and continually bubble values up until they satisfy the "heap property".
+     * Throws an error if the heap is full.
      *
      * @param {*} value
      * @returns {Heap}
@@ -121,21 +127,20 @@ export default class Heap extends Collection {
 
         let node = this.createNode(value),
             index = this.size,
-            tempIndex;
+            indexParent = parentIndex(index);
 
-        // Percolate values upwards
-        while (index > 0 && this.compare(node, this.items[this.parentIndex(index)])) {
-            tempIndex = this.parentIndex(index);
+        // Bubble upwards
+        while (index > 0 && this.compare(node, this.items[indexParent])) {
+            this.items[index] = this.items[indexParent];
 
-            this.items[index] = this.items[tempIndex];
-
-            index = tempIndex;
+            index = indexParent;
+            indexParent = parentIndex(indexParent);
         }
 
         // Set the node
         this.items[index] = node;
 
-        // Increase the size
+        // Increase size
         this.size += 1;
 
         return this;
@@ -154,27 +159,6 @@ export default class Heap extends Collection {
     }
 
     /**
-     * Return the right child index for the defined index, or -1 if invalid.
-     *
-     * @param {Number} index
-     * @returns {Number}
-     */
-    rightChildIndex(index) {
-        let right = (index * 2 + 2);
-
-        return (right >= this.size) ? -1 : right;
-    }
-
-    /**
-     * Sort the collection of nodes using the heap sort algorithm.
-     *
-     * @returns {Heap}
-     */
-    sort() {
-        return this;
-    }
-
-    /**
      * Return the top value in the heap but do not remove it, or return null if empty.
      *
      * @returns {*}
@@ -182,4 +166,35 @@ export default class Heap extends Collection {
     top() {
         return this.isEmpty() ? null : this.items[0].value;
     }
+}
+
+
+/**
+ * Return the left child index for the defined index.
+ *
+ * @param {Number} index
+ * @returns {Number}
+ */
+export function leftChildIndex(index) {
+    return (index * 2 + 1);
+}
+
+/**
+ * Return the parent index for the defined index.
+ *
+ * @param {Number} index
+ * @returns {Number}
+ */
+export function parentIndex(index) {
+    return Math.floor((index - 1) / 2);
+}
+
+/**
+ * Return the right child index for the defined index.
+ *
+ * @param {Number} index
+ * @returns {Number}
+ */
+export function rightChildIndex(index) {
+    return (index * 2 + 2);
 }
