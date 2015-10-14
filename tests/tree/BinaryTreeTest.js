@@ -786,10 +786,51 @@ describe('BinaryTree', () => {
         });
     });
 
-    it('should allow a custom Comparator class to be used', () => {
+    it('should be usable with strings', () => {
         tree = new BinaryTree(new StringComparator());
         tree.insertAll(['Miles', 'Alvin', 'Keith', 'Zach', 'Will', 'Ian', 'Chukky', 'Matt', 'Melanie']);
 
         expect(tree.toArray()).toEqual(['Miles', 'Alvin', 'Zach', 'Keith', 'Will', 'Ian', 'Matt', 'Chukky', 'Melanie']);
+        expect(tree.contains('Zach')).toBe(true);
+        expect(tree.depth('Keith')).toBe(2);
+        expect(tree.height('Alvin')).toBe(3);
+        expect(tree.max().value).toBe('Zach');
+        expect(tree.min().value).toBe('Alvin');
+        expect(tree.search('Chukky').value).toBe('Chukky');
+        expect(tree.maxDepth()).toBe(4);
+
+        let result = tree.remove('Keith');
+
+        expect(result).toBe(true);
+        expect(tree.toArray()).toEqual(['Miles', 'Alvin', 'Zach', 'Matt', 'Will', 'Ian', 'Melanie', 'Chukky']);
+    });
+
+    it('should be usable with objects', () => {
+        let o1 = { key: 'm3', name: 'Miles' },
+            o2 = { key: 'a', name: 'Alvin' },
+            o3 = { key: 'k', name: 'Keith' },
+            o4 = { key: 'z', name: 'Zach' },
+            o5 = { key: 'w', name: 'Will' },
+            o6 = { key: 'i', name: 'Ian' },
+            o7 = { key: 'c', name: 'Chukky' },
+            o8 = { key: 'm1', name: 'Matt' },
+            o9 = { key: 'm2', name: 'Melanie' },
+
+        tree = new BinaryTree(new StringComparator());
+        tree.insertAll([o1, o2, o3, o4, o5, o6, o7, o8, o9]);
+
+        expect(tree.toArray()).toEqual(['m3', 'a', 'z', 'k', 'w', 'i', 'm1', 'c', 'm2']);
+        expect(tree.contains('z')).toBe(true);
+        expect(tree.depth('k')).toBe(2);
+        expect(tree.height('a')).toBe(3);
+        expect(tree.max().value).toBe(o4);
+        expect(tree.min().value).toBe(o2);
+        expect(tree.search('c').value).toBe(o7);
+        expect(tree.maxDepth()).toBe(4);
+
+        let result = tree.remove('k');
+
+        expect(result).toBe(true);
+        expect(tree.toArray()).toEqual(['m3', 'a', 'z', 'm1', 'w', 'i', 'm2', 'c']);
     });
 });

@@ -52,9 +52,10 @@ export default class Node {
      * @returns {Boolean}
      */
     isKeyValid() {
-        let key = this.key;
+        let key = this.key,
+            type = typeof key;
 
-        return (key || key === 0 || key === 0.0);
+        return ((key || key === 0 || key === 0.0) && (type === 'string' || type === 'number'));
     }
 
     /**

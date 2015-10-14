@@ -10,6 +10,9 @@ export const LEVEL_ORDER = 'LEVEL_ORDER';
 /**
  * A `BinaryTree` is a specialized `Tree` in which every node has at most 2 children, a left and right child.
  * This structure also satisfies the binary search tree implementation.
+ *
+ * When dealing with a `BinaryTree`, all class methods make use of the nodes "key" for comparisons, not the value,
+ * which in some cases, could be an object of values.
  */
 export default class BinaryTree extends Tree {
 
@@ -149,11 +152,11 @@ export default class BinaryTree extends Tree {
         }
 
         let root = this.root,
-            maxLeft = root.left ? root.max(root.left) : 0,
-            minRight = root.right ? root.min(root.right) : root.value + 1,
+            maxLeft = root.left ? root.max(root.left) : root.key,
+            minRight = root.right ? root.min(root.right) : root.key + root.key,
             comparator = this.comparator();
 
-        return (comparator.lessThanEquals(maxLeft.value, root.value) && comparator.greaterThan(minRight.value, root.value));
+        return (comparator.lessThanEquals(maxLeft.key, root.key) && comparator.greaterThan(minRight.key, root.key));
     }
 
     /**
@@ -305,7 +308,7 @@ export default class BinaryTree extends Tree {
                 root.right.log(true);
             }
 
-            console.log(root.value);
+            console.log(root.key);
 
             if (root.left) {
                 root.left.log(false);
@@ -362,7 +365,7 @@ export default class BinaryTree extends Tree {
         let result = false;
 
         // Remove the root node
-        if (this.root.value === value) {
+        if (this.root.key === value) {
             let tempRoot = this.createNode(value);
                 tempRoot.left = this.root;
 
@@ -458,7 +461,7 @@ export default class BinaryTree extends Tree {
                 while (!queue.isEmpty()) {
                     node = queue.dequeue();
 
-                    if (callback(node.value, node) === true) {
+                    if (callback(node.key, node) === true) {
                         break;
                     }
 
@@ -504,10 +507,10 @@ export class BinaryTreeNode extends Node {
     depth(value, comparator) {
         let depth = -1;
 
-        if (comparator.equals(value, this.value)) {
+        if (comparator.equals(value, this.key)) {
             return 0;
 
-        } else if (comparator.greaterThan(value, this.value)) {
+        } else if (comparator.greaterThan(value, this.key)) {
             if (this.right) {
                 depth = this.right.depth(value, comparator);
 
@@ -515,7 +518,7 @@ export class BinaryTreeNode extends Node {
                 return -1;
             }
 
-        } else if (comparator.lessThan(value, this.value)) {
+        } else if (comparator.lessThan(value, this.key)) {
             if (this.left) {
                 depth = this.left.depth(value, comparator);
 
@@ -581,7 +584,7 @@ export class BinaryTreeNode extends Node {
             this.left.inOrder(callback);
         }
 
-        if (callback(this.value, this) === true) {
+        if (callback(this.key, this) === true) {
             return;
         }
 
@@ -602,7 +605,7 @@ export class BinaryTreeNode extends Node {
         }
 
         // Insert into right sub-tree if greater
-        if (comparator.greaterThan(node.value, this.value)) {
+        if (comparator.greaterThan(node.key, this.key)) {
             if (!this.right) {
                 this.right = node;
 
@@ -668,7 +671,7 @@ export class BinaryTreeNode extends Node {
             this.right.log(true, indent + (isRight ? '        ' : ' |      '));
         }
 
-        console.log(indent + (isRight ? ' /' : ' \\') + '----- ' + this.value);
+        console.log(indent + (isRight ? ' /' : ' \\') + '----- ' + this.key);
 
         if (this.left) {
             this.left.log(false, indent + (isRight ? ' |      ' : '        '));
@@ -713,7 +716,7 @@ export class BinaryTreeNode extends Node {
             this.right.postOrder(callback);
         }
 
-        callback(this.value, this);
+        callback(this.key, this);
     }
 
     /**
@@ -726,7 +729,7 @@ export class BinaryTreeNode extends Node {
             this.error('Traversal callback must be a function');
         }
 
-        if (callback(this.value, this) === true) {
+        if (callback(this.key, this) === true) {
             return;
         }
 
@@ -748,10 +751,13 @@ export class BinaryTreeNode extends Node {
      * @returns {Boolean}
      */
     remove(value, parentNode, comparator) {
-        if (comparator.equals(value, this.value)) {
+        if (comparator.equals(value, this.key)) {
             if (this.isFull()) {
-                this.value = this.min(this.right).value;
-                this.right.remove(this.value, this, comparator);
+                let newNode = this.min(this.right);
+
+                this.key = newNode.key;
+                this.value = newNode.value;
+                this.right.remove(this.key, this, comparator);
 
             } else if (parentNode.left === this) {
                 parentNode.left = this.left || this.right || null;
@@ -763,7 +769,7 @@ export class BinaryTreeNode extends Node {
             return true;
 
         // Search right tree
-        } else if (comparator.greaterThan(value, this.value)) {
+        } else if (comparator.greaterThan(value, this.key)) {
             if (this.right) {
                 return this.right.remove(value, this, comparator);
 
@@ -790,10 +796,10 @@ export class BinaryTreeNode extends Node {
      * @returns {BinaryTreeNode|null}
      */
     search(value, comparator) {
-        if (comparator.equals(value, this.value)) {
+        if (comparator.equals(value, this.key)) {
             return this;
 
-        } else if (comparator.greaterThan(value, this.value)) {
+        } else if (comparator.greaterThan(value, this.key)) {
             if (this.right) {
                 return this.right.search(value, comparator);
 
