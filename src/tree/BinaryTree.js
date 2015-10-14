@@ -31,7 +31,7 @@ export default class BinaryTree extends Tree {
      * {@inheritdoc}
      */
     createNode(value) {
-        return new BinaryTreeNode(this[comparator].hash(value), value);
+        return new BinaryTreeNode(value);
     }
 
     /**
@@ -493,15 +493,11 @@ export default class BinaryTree extends Tree {
  * @property {BinaryTreeNode|null} right
  */
 export class BinaryTreeNode extends Node {
-    constructor(value, data) {
+    constructor(value) {
         super(value);
 
         this.left = null;
         this.right = null;
-
-        if (data !== value) {
-            this.data = data;
-        }
     }
 
     /**
