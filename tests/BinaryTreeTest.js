@@ -202,14 +202,6 @@ describe('BinaryTree', () => {
     });
 
     describe('insert()', () => {
-        it('should error if a falsey value is used', () => {
-            expect(() => { tree.insert(null); }).toThrowError('A value is required when inserting');
-        });
-
-        it('should not error if 0 is used', () => {
-            expect(() => { tree.insert(0); }).not.toThrowError('A value is required when inserting');
-        });
-
         it('should set the root node if not set', () => {
             expect(tree.root).toBeNull();
             expect(tree.size).toBe(0);

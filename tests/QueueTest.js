@@ -255,4 +255,34 @@ describe('Queue', () => {
             ]);
         });
     });
+
+    it('should be usable with strings', () => {
+        queue.enqueueAll(['foo', 'bar', 'baz']);
+
+        expect(queue.contains('foo')).toBe(true);
+        expect(queue.indexOf('bar')).toBe(1);
+
+        let value = queue.dequeue();
+
+        expect(value).toBe('foo');
+        expect(queue.front()).toBe('bar');
+        expect(queue.back()).toBe('baz');
+    });
+
+    it('should be usable with objects', () => {
+        let foo = { key: 1, name: 'foo' },
+            bar = { key: 2, name: 'bar' },
+            baz = { key: 3, name: 'baz' };
+
+        queue.enqueueAll([foo, bar, baz]);
+
+        expect(queue.contains(foo)).toBe(true);
+        expect(queue.indexOf(bar)).toBe(1);
+
+        let value = queue.dequeue();
+
+        expect(value).toBe(foo);
+        expect(queue.front()).toBe(bar);
+        expect(queue.back()).toBe(baz);
+    });
 });

@@ -115,10 +115,6 @@ export default class BinaryTree extends Tree {
      * @returns {BinaryTree}
      */
     insert(value) {
-        if (!value && value !== 0) {
-            this.error('A value is required when inserting');
-        }
-
         let node = this.createNode(value);
 
         // Root has not been set

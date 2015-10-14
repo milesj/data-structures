@@ -237,4 +237,32 @@ describe('Stack', () => {
             expect(stack.size).toBe(2);
         });
     });
+
+    it('should be usable with strings', () => {
+        stack.pushAll(['foo', 'bar', 'baz']);
+
+        expect(stack.contains('foo')).toBe(true);
+        expect(stack.indexOf('bar')).toBe(1);
+
+        let value = stack.pop();
+
+        expect(value).toBe('baz');
+        expect(stack.top()).toBe('bar');
+    });
+
+    it('should be usable with objects', () => {
+        let foo = { key: 1, name: 'foo' },
+            bar = { key: 2, name: 'bar' },
+            baz = { key: 3, name: 'baz' };
+
+        stack.pushAll([foo, bar, baz]);
+
+        expect(stack.contains(foo)).toBe(true);
+        expect(stack.indexOf(bar)).toBe(1);
+
+        let value = stack.pop();
+
+        expect(value).toBe(baz);
+        expect(stack.top()).toBe(bar);
+    });
 });

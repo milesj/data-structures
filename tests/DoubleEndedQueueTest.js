@@ -120,4 +120,34 @@ describe('DoubleEndedQueue', () => {
             ]);
         });
     });
+
+    it('should be usable with strings', () => {
+        queue.enqueueAll(['foo', 'bar', 'baz']);
+
+        expect(queue.contains('foo')).toBe(true);
+        expect(queue.indexOf('bar')).toBe(1);
+
+        let value = queue.dequeueBack();
+
+        expect(value).toBe('baz');
+        expect(queue.front()).toBe('foo');
+        expect(queue.back()).toBe('bar');
+    });
+
+    it('should be usable with objects', () => {
+        let foo = { key: 1, name: 'foo' },
+            bar = { key: 2, name: 'bar' },
+            baz = { key: 3, name: 'baz' };
+
+        queue.enqueueFrontAll([foo, bar, baz]);
+
+        expect(queue.contains(foo)).toBe(true);
+        expect(queue.indexOf(bar)).toBe(1);
+
+        let value = queue.dequeueBack();
+
+        expect(value).toBe(foo);
+        expect(queue.front()).toBe(baz);
+        expect(queue.back()).toBe(bar);
+    });
 });

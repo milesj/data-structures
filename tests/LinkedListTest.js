@@ -479,4 +479,59 @@ describe('LinkedList', () => {
             ]);
         });
     });
+
+    it('should be usable with strings', () => {
+        list.appendAll(['foo', 'bar', 'baz']).prepend('wat');
+
+        expect(list.contains('foo')).toBe(true);
+        expect(list.indexOf('bar')).toBe(2);
+        expect(list.first()).toBe('wat');
+        expect(list.last()).toBe('baz');
+
+        let value = list.removeFirst();
+
+        expect(value).toBe('wat');
+        expect(list.first()).toBe('foo');
+
+        value = list.removeLast();
+
+        expect(value).toBe('baz');
+        expect(list.last()).toBe('bar');
+
+        value = list.removeAt(1);
+
+        expect(value).toBe('bar');
+        expect(list.first()).toBe('foo');
+        expect(list.last()).toBe('foo');
+    });
+
+    it('should be usable with objects', () => {
+        let foo = { key: 1, name: 'foo' },
+            bar = { key: 2, name: 'bar' },
+            baz = { key: 3, name: 'baz' },
+            wat = { key: 0, name: 'wat' };
+
+        list.appendAll([foo, bar, baz]).prepend(wat);
+
+        expect(list.contains(foo)).toBe(true);
+        expect(list.indexOf(bar)).toBe(2);
+        expect(list.first()).toBe(wat);
+        expect(list.last()).toBe(baz);
+
+        let value = list.removeFirst();
+
+        expect(value).toBe(wat);
+        expect(list.first()).toBe(foo);
+
+        value = list.removeLast();
+
+        expect(value).toBe(baz);
+        expect(list.last()).toBe(bar);
+
+        value = list.removeAt(1);
+
+        expect(value).toBe(bar);
+        expect(list.first()).toBe(foo);
+        expect(list.last()).toBe(foo);
+    });
 });
