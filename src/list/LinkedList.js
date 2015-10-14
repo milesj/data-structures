@@ -2,10 +2,17 @@ import Collection from '../Collection';
 import Node from '../Node';
 
 /**
+ * A `LinkedList` is a data structure consisting of a group of nodes, linked through references,
+ * which together represent a sequence.
+ *
  * @property {LinkedListNode|null} head
  * @property {LinkedListNode|null} tail
  */
 export default class LinkedList extends Collection {
+
+    /**
+     * Set the initial head and tail to null.
+     */
     constructor() {
         super();
 
@@ -489,8 +496,8 @@ export default class LinkedList extends Collection {
  * @property {LinkedListNode|null} next
  */
 export class LinkedListNode extends Node {
-    constructor(value) {
-        super(value);
+    constructor(data) {
+        super(data);
 
         this.next = null;
     }

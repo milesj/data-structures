@@ -10,6 +10,10 @@ export const LEVEL_ORDER = 'LEVEL_ORDER';
 
 const comparator = Symbol('comparator');
 
+/**
+ * A `BinaryTree` is a specialized `Tree` in which every node has at most 2 children, a left and right child.
+ * This structure also satisfies the binary search tree implementation.
+ */
 export default class BinaryTree extends Tree {
     constructor(object) {
         super();
@@ -108,8 +112,6 @@ export default class BinaryTree extends Tree {
     /**
      * Insert a value into the respective sub-tree. If the value is greater, insert into the right tree,
      * else if the value is lower, insert into the left tree.
-     *
-     * Will throw an error if a falsey value is provided.
      *
      * @param {*} value
      * @returns {BinaryTree}
@@ -493,8 +495,8 @@ export default class BinaryTree extends Tree {
  * @property {BinaryTreeNode|null} right
  */
 export class BinaryTreeNode extends Node {
-    constructor(value) {
-        super(value);
+    constructor(data) {
+        super(data);
 
         this.left = null;
         this.right = null;

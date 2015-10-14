@@ -1,6 +1,9 @@
 import LinkedList from './LinkedList';
-import Node from '../Node';
 
+/**
+ * A `CircularLinkedList` is a specialized `LinkedList` in which the tail node
+ * keeps a next reference to the head node, forming a circular chain.
+ */
 export default class CircularLinkedList extends LinkedList {
 
     /**

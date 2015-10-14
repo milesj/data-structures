@@ -1,6 +1,10 @@
 import LinkedList from './LinkedList';
 import Node from '../Node';
 
+/**
+ * A `DoublyLinkedList` is a specialized `LinkedList` in which each node keeps a reference to the
+ * previous node in the chain.
+ */
 export default class DoublyLinkedList extends LinkedList {
 
     /**
@@ -77,8 +81,8 @@ export default class DoublyLinkedList extends LinkedList {
  * @property {DoublyLinkedListNode|null} prev
  */
 export class DoublyLinkedListNode extends Node {
-    constructor(value) {
-        super(value);
+    constructor(data) {
+        super(data);
 
         this.next = null;
         this.prev = null;

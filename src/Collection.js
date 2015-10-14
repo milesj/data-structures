@@ -1,6 +1,9 @@
 import Structure from './Structure';
 
 /**
+ * A `Collection` is an abstract class that defines a collection of nodes.
+ *
+ * @abstract
  * @property {Node[]} items
  * @property {Number} size
  */

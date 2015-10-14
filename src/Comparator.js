@@ -1,8 +1,9 @@
-export default class Comparator {
-    hash(value) {
-        return value;
-    }
 
+/**
+ * A `Comparator` is used for comparing and evaluating expressions within advanced data structures.
+ * Only valid for integers and floats.
+ */
+export default class Comparator {
     equals(value, base) {
         return (value === base);
     }
@@ -24,7 +25,20 @@ export default class Comparator {
     }
 }
 
+/**
+ * A `StringComparator` can be used for comparing strings alphabetically.
+ */
 export class StringComparator extends Comparator {
+
+    /**
+     * An optional locale and set of options can be defined to modify
+     * the `Collator` functionality.
+     *
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Collator
+     *
+     * @param {String} [locale]
+     * @param {Object} [options]
+     */
     constructor(locale = null, options = {}) {
         super();
 

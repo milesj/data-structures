@@ -1,5 +1,10 @@
 import Node from './Node';
 
+/**
+ * A `Structure` is an abstract class that all data structures extend from.
+ *
+ * @abstract
+ */
 export default class Structure {
 
     /**

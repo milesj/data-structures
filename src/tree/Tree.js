@@ -1,10 +1,17 @@
 import Structure from '../Structure';
 
 /**
+ * A `Tree` data structure simulates a hierarchical tree structure, representing as a set of linked nodes,
+ * consisting of a root node and sub-trees of children with a parent node.
+ *
  * @property {Node|null} root
  * @property {Number} size
  */
 export default class Tree extends Structure {
+
+    /**
+     * Set the initial root node to null.
+     */
     constructor() {
         super();
 

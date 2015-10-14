@@ -1,10 +1,20 @@
 import Collection from '../Collection';
 
 /**
+ * A `Stack` is a basic data structure that can be represented as a stack or pile of data.
+ * Insertion and deletion of items takes place at one end, called top of the stack.
+ * This is also known as a last in first out approach (LIFO).
+ *
  * @property {Number} index
  * @property {Number} capacity
  */
 export default class Stack extends Collection {
+
+    /**
+     * Set the capacity limit. If the capacity is 0, there is no limit.
+     *
+     * @param {Number} [capacity]
+     */
     constructor(capacity = 0) {
         super();
 
@@ -13,7 +23,7 @@ export default class Stack extends Collection {
     }
 
     /**
-     * Returns true if the collection contains the specified value.
+     * Returns true if the stack contains the specified value.
      *
      * @param {*} value
      * @returns {Boolean}
@@ -23,7 +33,7 @@ export default class Stack extends Collection {
     }
 
     /**
-     * Returns the index of the first occurrence of the specified value in this collection or -1 otherwise.
+     * Returns the index of the first occurrence of the specified value in the stack or -1 otherwise.
      *
      * @param {*} value
      * @returns {Number}
@@ -48,7 +58,7 @@ export default class Stack extends Collection {
     }
 
     /**
-     * Remove and return the top (last) value in the collection, or return null if empty.
+     * Remove and return the top (last) value in the stack, or return null if empty.
      *
      * @returns {*}
      */
@@ -64,7 +74,7 @@ export default class Stack extends Collection {
     }
 
     /**
-     * Remove and return an array of all values in the collection.
+     * Remove and return an array of all values in the stack.
      * Will return them in the pop order.
      *
      * @returns {*[]}
@@ -80,8 +90,8 @@ export default class Stack extends Collection {
     }
 
     /**
-     * Push a value to the top (end) of the collection.
-     * Throws an error if the collection is full.
+     * Push a value to the top (end) of the stack.
+     * Throws an error if the stack is full.
      *
      * @param {*} value
      * @returns {Stack}
@@ -99,7 +109,7 @@ export default class Stack extends Collection {
     }
 
     /**
-     * Push multiple values to the top of the collection.
+     * Push multiple values to the top of the stack.
      *
      * @param {*} values
      * @returns {Stack}
@@ -111,15 +121,11 @@ export default class Stack extends Collection {
     }
 
     /**
-     * Returns the top (last) value in the collection but does not remove it, or returns null if empty.
+     * Returns the top value in the stack but does not remove it, or returns null if empty.
      *
      * @returns {*}
      */
     top() {
-        if (this.isEmpty()) {
-            return null;
-        }
-
-        return this.items[this.index - 1].value;
+        return this.isEmpty() ? null : this.items[this.index - 1].value;
     }
 }

@@ -1,9 +1,12 @@
 import Queue from './Queue';
 
+/**
+ * A `DoubleEndedQueue` is a specialized `Queue` in which values can be inserted or removed from both ends.
+ */
 export default class DoubleEndedQueue extends Queue {
 
     /**
-     * Remove and return the last value in the collection, or return null if empty.
+     * Remove and return the last value in the queue, or return null if empty.
      *
      * @returns {*}
      */
@@ -19,7 +22,7 @@ export default class DoubleEndedQueue extends Queue {
     }
 
     /**
-     * Remove and return an array of all values in the collection.
+     * Remove and return an array of all values in the queue.
      * Will return them in reverse dequeue order.
      *
      * @returns {*[]}
@@ -35,11 +38,11 @@ export default class DoubleEndedQueue extends Queue {
     }
 
     /**
-     * Push a value to the front of the collection.
-     * Throws an error if the collection is full.
+     * Push a value to the front of the queue.
+     * Throws an error if the queue is full.
      *
      * @param {*} value
-     * @returns {Queue}
+     * @returns {DoubleEndedQueue}
      */
     enqueueFront(value) {
         if (this.isFull()) {
@@ -54,10 +57,10 @@ export default class DoubleEndedQueue extends Queue {
     }
 
     /**
-     * Push multiple values to the front of the collection.
+     * Push multiple values to the front of the queue.
      *
      * @param {*} values
-     * @returns {Queue}
+     * @returns {DoubleEndedQueue}
      */
     enqueueFrontAll(values) {
         values.forEach(this.enqueueFront.bind(this));
