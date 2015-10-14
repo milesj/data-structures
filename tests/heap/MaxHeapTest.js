@@ -31,6 +31,16 @@ describe('MaxHeap', () => {
         });
     });
 
+    describe('contains()', () => {
+        it('should return true if the value exists', () => {
+            expect(heap.contains(2)).toBe(false);
+
+            heap.push(1).push(2).push(3);
+
+            expect(heap.contains(2)).toBe(true);
+        });
+    });
+
     describe('empty()', () => {
         it('should delete all nodes', () => {
             expect(heap.isEmpty()).toBe(true);
@@ -46,6 +56,29 @@ describe('MaxHeap', () => {
             expect(heap.isEmpty()).toBe(true);
             expect(heap.size).toBe(0);
             expect(heap.items).toEqual([]);
+        });
+    });
+
+    describe('indexOf()', () => {
+        it('should return -1 if not found', () => {
+            expect(heap.indexOf(5)).toBe(-1);
+
+            heap.push(1);
+
+            expect(heap.indexOf(5)).toBe(-1);
+        });
+
+        it('should return the index', () => {
+            heap.push(1).push(2).push(3);
+
+            expect(heap.indexOf(1)).toBe(1);
+            expect(heap.indexOf(3)).toBe(0);
+        });
+
+        it('should return the first index of the same value', () => {
+            heap.push(1).push(2).push(2).push(3);
+
+            expect(heap.indexOf(2)).toBe(1);
         });
     });
 
@@ -178,6 +211,8 @@ describe('MaxHeap', () => {
         heap.pushAll([foo, bar, baz]);
 
         expect(heap.toArray()).toEqual([baz, foo, bar]);
+        expect(heap.contains(bar)).toBe(true);
+        expect(heap.indexOf(foo)).toBe(1);
         expect(heap.max()).toBe(baz);
 
         let value = heap.pop();

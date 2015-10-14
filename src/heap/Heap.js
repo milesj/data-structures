@@ -24,6 +24,32 @@ export default class Heap extends Collection {
     }
 
     /**
+     * Returns true if the heap contains the specified value.
+     *
+     * @param {*} value
+     * @returns {Boolean}
+     */
+    contains(value) {
+        return (this.indexOf(value) >= 0);
+    }
+
+    /**
+     * Returns the index of the first occurrence of the specified value in this heap or -1 otherwise.
+     *
+     * @param {*} value
+     * @returns {Number}
+     */
+    indexOf(value) {
+        for (var i = 0; i < this.size; i++) {
+            if (this.items[i].value === value) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    /**
      * Remove and return the top (min or max) value in the heap and continually bubble values down
      * until they satisfy the "heap property", or return null if empty.
      *
