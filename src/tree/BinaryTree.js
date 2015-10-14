@@ -1,25 +1,17 @@
 import Tree from './Tree';
 import Node from '../Node';
 import Queue from '../queue/Queue';
-import Comparator from '../Comparator';
 
 export const IN_ORDER = 'IN_ORDER';
 export const PRE_ORDER = 'PRE_ORDER';
 export const POST_ORDER = 'POST_ORDER';
 export const LEVEL_ORDER = 'LEVEL_ORDER';
 
-const comparator = Symbol('comparator');
-
 /**
  * A `BinaryTree` is a specialized `Tree` in which every node has at most 2 children, a left and right child.
  * This structure also satisfies the binary search tree implementation.
  */
 export default class BinaryTree extends Tree {
-    constructor(object) {
-        super();
-
-        this[comparator] = (object instanceof Comparator) ? object : new Comparator();
-    }
 
     /**
      * Returns true if the tree contains the specified value.
@@ -42,7 +34,7 @@ export default class BinaryTree extends Tree {
      * {@inheritdoc}
      */
     depth(value) {
-        return this.isEmpty() ? -1 : this.root.depth(value, this[comparator]);
+        return this.isEmpty() ? -1 : this.root.depth(value, this.comparator());
     }
 
     /**
@@ -125,7 +117,7 @@ export default class BinaryTree extends Tree {
 
         // Insert onto the root node directly
         } else {
-            this.root.insert(node, this[comparator]);
+            this.root.insert(node, this.comparator());
         }
 
         // Increase the size
@@ -159,9 +151,9 @@ export default class BinaryTree extends Tree {
         let root = this.root,
             maxLeft = root.left ? root.max(root.left) : 0,
             minRight = root.right ? root.min(root.right) : root.value + 1,
-            compare = this[comparator];
+            comparator = this.comparator();
 
-        return (compare.lessThanEquals(maxLeft.value, root.value) && compare.greaterThan(minRight.value, root.value));
+        return (comparator.lessThanEquals(maxLeft.value, root.value) && comparator.greaterThan(minRight.value, root.value));
     }
 
     /**
@@ -374,13 +366,13 @@ export default class BinaryTree extends Tree {
             let tempRoot = this.createNode(value);
                 tempRoot.left = this.root;
 
-            result = this.root.remove(value, tempRoot, this[comparator]);
+            result = this.root.remove(value, tempRoot, this.comparator());
 
             this.root = tempRoot.left;
 
         // Remove a child
         } else {
-            result = this.root.remove(value, null, this[comparator]);
+            result = this.root.remove(value, null, this.comparator());
         }
 
         // Decrease the size
@@ -408,7 +400,7 @@ export default class BinaryTree extends Tree {
      * @returns {BinaryTreeNode|null}
      */
     search(value) {
-        return this.isEmpty() ? null : this.root.search(value, this[comparator]);
+        return this.isEmpty() ? null : this.root.search(value, this.comparator());
     }
 
     /**

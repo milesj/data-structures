@@ -1,4 +1,7 @@
 import Structure from '../Structure';
+import Comparator from '../Comparator';
+
+const comparatorProp = Symbol('comparator');
 
 /**
  * A `Tree` data structure simulates a hierarchical tree structure, representing as a set of linked nodes,
@@ -10,13 +13,25 @@ import Structure from '../Structure';
 export default class Tree extends Structure {
 
     /**
-     * Set the initial root node to null.
+     * Set the initial root node to null, and defined the `Comparator`.
+     *
+     * @param {Comparator} [comparator]
      */
-    constructor() {
+    constructor(comparator) {
         super();
 
         this.root = null;
         this.size = 0;
+        this[comparatorProp] = (comparator instanceof Comparator) ? comparator : new Comparator();
+    }
+
+    /**
+     * Returns the `Comparator` instance.
+     *
+     * @returns {Comparator}
+     */
+    comparator() {
+        return this[comparatorProp];
     }
 
     /**
