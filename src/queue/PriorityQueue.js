@@ -7,7 +7,7 @@ import { isObject } from '../helpers';
  * The lower the priority level number, the faster it will be processed -- for example, 1 has the highest priority.
  * The implementation uses `MinHeap` as its underlying architecture, and not a regular `Queue`.
  *
- * When pushing a value object onto the queue, a "priority" property must be defined.
+ * When pushing an object onto the queue, a "priority" property must be defined.
  * If one does not exist, it will automatically be set.
  */
 export default class PriorityQueue extends MinHeap {
@@ -42,7 +42,7 @@ export default class PriorityQueue extends MinHeap {
      *
      * @param {*} value
      * @param {Number} [priority]
-     * @returns {PriorityQueue}
+     * @returns {Heap}
      */
     enqueue(value, priority) {
         return this.push(value, priority);
@@ -66,14 +66,14 @@ export default class PriorityQueue extends MinHeap {
      *
      * @param {*} value
      * @param {Number} [priority]
-     * @returns {PriorityQueue}
+     * @returns {Heap}
      */
     push(value, priority) {
         if (isObject(value) && typeof value.priority === 'undefined') {
             value.priority = priority || 100 + this.size;
         }
 
-        return this.push(value);
+        return super.push(value);
     }
 }
 
