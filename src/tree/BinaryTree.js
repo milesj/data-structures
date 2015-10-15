@@ -29,8 +29,8 @@ export default class BinaryTree extends Tree {
     /**
      * {@inheritdoc}
      */
-    createNode(value) {
-        return new BinaryTreeNode(value);
+    createNode(data) {
+        return new BinaryTreeNode(data);
     }
 
     /**

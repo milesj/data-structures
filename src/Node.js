@@ -1,4 +1,4 @@
-const toString = Object.prototype.toString;
+import { isObject } from './helpers';
 
 /**
  * A `Node` is an individual unit found within all larger data structures.
@@ -26,7 +26,7 @@ export default class Node {
             keyName = this.keyName();
 
         // Objects
-        if (data && toString.call(data) === '[object Object]') {
+        if (isObject(data)) {
             this.value = data;
             this.key = (typeof data.getNodeKey === 'function')
                 ? data.getNodeKey.call(data, keyName)

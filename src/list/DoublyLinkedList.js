@@ -10,8 +10,8 @@ export default class DoublyLinkedList extends LinkedList {
     /**
      * {@inheritdoc}
      */
-    createNode(value) {
-        return new DoublyLinkedListNode(value);
+    createNode(data) {
+        return new DoublyLinkedListNode(data);
     }
 
     /**

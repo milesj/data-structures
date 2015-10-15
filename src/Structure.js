@@ -10,11 +10,11 @@ export default class Structure {
     /**
      * Create a new Node and assign a value.
      *
-     * @param {*} value
+     * @param {*} data
      * @returns {Node}
      */
-    createNode(value) {
-        return new Node(value);
+    createNode(data) {
+        return new Node(data);
     }
 
     /**
