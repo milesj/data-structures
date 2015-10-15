@@ -14,8 +14,8 @@ const hasherProp = Symbol('hasher');
  *
  * If a data structure is required for mapping keys to values, the built-in `Map` and `WeakMap` should suffice.
  *
- * @property {Map} items
- * @property {Number} itemSize
+ * @property {Map} items - Mapping of keys to buckets
+ * @property {Number} itemSize - Count of all items across all buckets
  */
 export default class HashTable extends Collection {
 
@@ -198,7 +198,7 @@ export default class HashTable extends Collection {
         }
 
         // Update bucket
-        this.items[key] = bucket;
+        this.items.set(key, bucket);
 
         return result;
     }
@@ -253,14 +253,23 @@ export function hashKey(value) {
  *
  * @link https://www.cs.hmc.edu/~geoff/classes/hmc.cs070.200101/homework10/hashfuncs.html
  *
- * @param {Number} value
+ * @param {String|Number} value
  * @param {Number} capacity
  * @returns {Number}
  */
 export function moduloHash(value, capacity) {
-    let key = hashKey(value);
+    let key = hashKey(value),
+        hash = key;
 
-    return (key * (key + 3)) % capacity;
+    if (typeof key === 'string') {
+        hash = 0;
+
+        for (let i = 0; i < key.length; i++) {
+            hash += key.charCodeAt(i);
+        }
+    }
+
+    return (hash * (hash + 3)) % capacity;
 }
 
 /**
@@ -274,13 +283,13 @@ export function moduloHash(value, capacity) {
  */
 export function djb2Hash(value, capacity) {
     let key = hashKey(value),
-        hash = 0;
+        hash = 5381;
 
-    for (let i = 0; i < capacity; i++) {
-        hash = 33 * hash ^ key.charCodeAt(i);
+    for (let i = 0; i < key.length; i++) {
+        hash = ((hash << 5) + hash) ^ key.charCodeAt(i);
     }
 
-    return hash;
+    return Math.abs(hash % capacity);
 }
 
 /**
@@ -296,11 +305,11 @@ export function sdbmHash(value, capacity) {
     let key = hashKey(value),
         hash = 0;
 
-    for (let i = 0; i < capacity; i++) {
+    for (let i = 0; i < key.length; i++) {
         hash = key.charCodeAt(i) + (hash << 6) + (hash << 16) - hash;
     }
 
-    return hash;
+    return Math.abs(hash % capacity);
 }
 
 /**
@@ -316,11 +325,11 @@ export function saxHash(value, capacity) {
     let key = hashKey(value),
         hash = 0;
 
-    for (let i = 0; i < capacity; i++) {
+    for (let i = 0; i < key.length; i++) {
         hash ^= (hash << 5) + (hash >> 2) + key.charCodeAt(i);
     }
 
-    return hash;
+    return Math.abs(hash % capacity);
 }
 
 /**
@@ -336,11 +345,11 @@ export function fnvHash(value, capacity) {
     let key = hashKey(value),
         hash = 0;
 
-    for (let i = 0; i < capacity; i++) {
+    for (let i = 0; i < key.length; i++) {
         hash = (hash * 16777619) ^ key.charCodeAt(i);
     }
 
-    return hash;
+    return Math.abs(hash % capacity);
 }
 
 /**
@@ -356,7 +365,7 @@ export function oatHash(value, capacity) {
     let key = hashKey(value),
         hash = 0;
 
-    for (let i = 0; i < capacity; i++) {
+    for (let i = 0; i < key.length; i++) {
         hash = key.charCodeAt(i);
         hash += (hash << 10);
         hash ^= (hash >> 6);
@@ -366,5 +375,5 @@ export function oatHash(value, capacity) {
     hash ^= (hash >> 11);
     hash += (hash << 15);
 
-    return hash;
+    return Math.abs(hash % capacity);
 }
