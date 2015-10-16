@@ -1,4 +1,4 @@
-import HashTable, { moduloHash, djb2Hash, sdbmHash, saxHash, fnvHash, oatHash } from '../../src/map/HashTable';
+import HashTable, { modulo, djb2, sdbm, sax, fnv, oat } from '../../src/map/HashTable';
 
 function populateMap(map) {
     map.putAll([
@@ -21,7 +21,7 @@ describe('HashTable', () => {
     let map;
 
     beforeEach(() => {
-        map = new HashTable(moduloHash, 3);
+        map = new HashTable(modulo, 3);
     });
 
     describe('iterate()', () => {
@@ -61,11 +61,11 @@ describe('HashTable', () => {
         });
 
         it('should error if no capacity', () => {
-            expect(() => { new HashTable(moduloHash); }).toThrowError('HashTable requires a bucket capacity');
+            expect(() => { new HashTable(modulo); }).toThrowError('HashTable requires a bucket capacity');
         });
 
         it('should error if capacity is <= 0', () => {
-            expect(() => { new HashTable(moduloHash, 0); }).toThrowError('HashTable requires a bucket capacity');
+            expect(() => { new HashTable(modulo, 0); }).toThrowError('HashTable requires a bucket capacity');
         });
     });
 
@@ -275,9 +275,9 @@ describe('HashTable', () => {
     });
 });
 
-describe('moduloHash()', () => {
+describe('modulo()', () => {
     it('should distribute values', () => {
-        let map = new HashTable(moduloHash, 5);
+        let map = new HashTable(modulo, 5);
 
         populateMap(map);
 
@@ -289,9 +289,9 @@ describe('moduloHash()', () => {
     });
 });
 
-describe('djb2Hash()', () => {
+describe('djb2()', () => {
     it('should distribute values', () => {
-        let map = new HashTable(djb2Hash, 5);
+        let map = new HashTable(djb2, 5);
 
         populateMap(map);
 
@@ -305,9 +305,9 @@ describe('djb2Hash()', () => {
     });
 });
 
-describe('sdbmHash()', () => {
+describe('sdbm()', () => {
     it('should distribute values', () => {
-        let map = new HashTable(sdbmHash, 5);
+        let map = new HashTable(sdbm, 5);
 
         populateMap(map);
 
@@ -320,9 +320,9 @@ describe('sdbmHash()', () => {
     });
 });
 
-describe('saxHash()', () => {
+describe('sax()', () => {
     it('should distribute values', () => {
-        let map = new HashTable(saxHash, 5);
+        let map = new HashTable(sax, 5);
 
         populateMap(map);
 
@@ -336,9 +336,9 @@ describe('saxHash()', () => {
     });
 });
 
-describe('fnvHash()', () => {
+describe('fnv()', () => {
     it('should distribute values', () => {
-        let map = new HashTable(fnvHash, 5);
+        let map = new HashTable(fnv, 5);
 
         populateMap(map);
 
@@ -351,9 +351,9 @@ describe('fnvHash()', () => {
     });
 });
 
-describe('oatHash()', () => {
+describe('oat()', () => {
     it('should distribute values', () => {
-        let map = new HashTable(oatHash, 5);
+        let map = new HashTable(oat, 5);
 
         populateMap(map);
 

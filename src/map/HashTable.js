@@ -257,7 +257,7 @@ export function hashKey(value) {
  * @param {Number} capacity
  * @returns {Number}
  */
-export function moduloHash(value, capacity) {
+export function modulo(value, capacity) {
     let key = hashKey(value),
         hash = key;
 
@@ -281,7 +281,7 @@ export function moduloHash(value, capacity) {
  * @param {Number} capacity
  * @returns {Number}
  */
-export function djb2Hash(value, capacity) {
+export function djb2(value, capacity) {
     let key = hashKey(value),
         hash = 5381;
 
@@ -301,7 +301,7 @@ export function djb2Hash(value, capacity) {
  * @param {Number} capacity
  * @returns {Number}
  */
-export function sdbmHash(value, capacity) {
+export function sdbm(value, capacity) {
     let key = hashKey(value),
         hash = 0;
 
@@ -321,7 +321,7 @@ export function sdbmHash(value, capacity) {
  * @param {Number} capacity
  * @returns {Number}
  */
-export function saxHash(value, capacity) {
+export function sax(value, capacity) {
     let key = hashKey(value),
         hash = 0;
 
@@ -341,7 +341,7 @@ export function saxHash(value, capacity) {
  * @param {Number} capacity
  * @returns {Number}
  */
-export function fnvHash(value, capacity) {
+export function fnv(value, capacity) {
     let key = hashKey(value),
         hash = 0;
 
@@ -361,7 +361,7 @@ export function fnvHash(value, capacity) {
  * @param {Number} capacity
  * @returns {Number}
  */
-export function oatHash(value, capacity) {
+export function oat(value, capacity) {
     let key = hashKey(value),
         hash = 0;
 
