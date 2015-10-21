@@ -1,7 +1,24 @@
 {
-    "scripts": {
-        "test": "./node_modules/.bin/karma start"
+    "version": "0.0.0",
+    "name": "@milesj/data-structures",
+    "description": "A collection of data structures for JavaScript and Node.js.",
+    "keywords": ["data", "structures"],
+    "copyright": "Copyright 2015, Miles Johnson",
+    "license": "BSD-3-Clause",
+    "author": {
+        "name": "Miles Johnson",
+        "url": "http://milesj.me"
     },
+    "bugs": "https://github.com/milesj/data-structures/issues",
+    "repository": "github:milesj/data-structures",
+
+    "main": "src/index.js",
+    "scripts": {
+        "test": "./node_modules/.bin/karma start",
+        "lint": "./node_modules/.bin/eslint --config ./.eslintrc ./src",
+        "build": "./node_modules/.bin/babel ./src --out-dir ./dist"
+    },
+
     "devDependencies": {
         "karma": "*",
         "karma-jasmine": "*",
@@ -9,7 +26,10 @@
         "karma-firefox-launcher": "*",
         "karma-phantomjs-launcher": "*",
         "karma-browserify": "*",
+        "babel": "*",
+        "babelify": "*",
         "browserify": "*",
-        "babelify": "*"
+        "eslint": "*",
+        "babel-eslint": "*"
     }
 }
