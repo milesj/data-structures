@@ -1,7 +1,20 @@
 import Graph, { Vertex, Edge, BREADTH_FIRST, DEPTH_FIRST } from './Graph';
 
+/**
+ * An `AdjacencyMatrix` is a type of graph data structure that utilizes arrays of nested arrays to create
+ * a grid, where each row and column is a vertex, and each cell denotes an edge.
+ *
+ * @property {Number} index - The current vertex index in the matrix
+ * @property {Array} matrix - The array matrix that denotes edges
+ */
 export default class AdjacencyMatrix extends Graph {
-    constructor(capacity) {
+
+    /**
+     * If a capacity is defined, the matrix array will be pre-allocated.
+     *
+     * @param {Number} [capacity]
+     */
+    constructor(capacity = 0) {
         super();
 
         this.index = 0;
@@ -9,14 +22,16 @@ export default class AdjacencyMatrix extends Graph {
 
         // Generate the matrix ahead of time
         if (capacity > 0) {
+            let row = Array(capacity).fill(0);
+
             for (let i = 0; i < capacity; i++) {
-                this.matrix[i] = [].fill(0, 0, capacity - 1);
+                this.matrix[i] = [].concat(row);
             }
         }
     }
 
     /**
-     * Connect an origin vertex to a destination vertex with a directed edge by denoting a 1 (or custom weight)
+     * Connect an origin vertex to a target vertex with a directed edge by denoting a 1 (or custom weight)
      * in the matrix that correlates to their defined index. A custom edge weight can be defined as the 3rd argument.
      * If either vertex cannot be found, this will be a no operation.
      *
@@ -28,21 +43,24 @@ export default class AdjacencyMatrix extends Graph {
      */
     addEdge(a, b, weight = 1, bidi = false) {
         let origin = this.getVertex(a),
-            dest = this.getVertex(b);
+            target = this.getVertex(b);
 
-        if (!origin || !dest) {
+        if (!origin || !target) {
             return this;
         }
 
-        this.matrix[origin.index][dest.index] = weight;
-
-        // Set bi-directional
-        if (bidi) {
-            this.matrix[dest.index][origin.index] = weight;
+        // Increase edge count
+        if (!this.matrix[origin.index][target.index] && !this.matrix[target.index][origin.index]) {
+            this.edgeSize += 1;
         }
 
-        // Increase edge count
-        this.edgeSize += 1;
+        // Set directed
+        this.matrix[origin.index][target.index] = weight;
+
+        // Set undirected
+        if (bidi) {
+            this.matrix[target.index][origin.index] = weight;
+        }
 
         return this;
     }
@@ -84,6 +102,10 @@ export default class AdjacencyMatrix extends Graph {
     addVertex(value) {
         let vertex = this.createNode(value);
 
+        if (this.vertices.has(value)) {
+            return this;
+        }
+
         // Set node index
         vertex.index = this.index++;
 
@@ -91,11 +113,11 @@ export default class AdjacencyMatrix extends Graph {
         this.vertexSize += 1;
 
         // Keep a reference for quick lookup
-        this.vertices[value] = vertex;
+        this.vertices.set(value, vertex);
 
         // Expand the matrix if necessary
-        if (!vertex.index in this.matrix) {
-            this.matrix[vertex.index] = [].fill(0, 0, this.index - 1);
+        if (!(vertex.index in this.matrix)) {
+            this.matrix[vertex.index] = Array(this.index).fill(0);
 
             for (let i = 0; i < this.index; i++) {
                 this.matrix[i][vertex.index] = 0;
@@ -210,7 +232,32 @@ export default class AdjacencyMatrix extends Graph {
     }
 
     /**
-     * Disconnect the directed edge between the origin vertex and the destination vertex by denoting a 0
+     * Log a visual representation of the graph to the console.
+     */
+    log() {
+        let header = '      ',
+            rows = [],
+            cols = [],
+            pad = (value, size) => ('    ' + value).slice(-size);
+
+        for (let i = 0; i < this.matrix.length; i++) {
+            header += pad(i, 2) + '  ';
+            cols = [];
+
+            for (let j = 0; j < this.matrix[i].length; j++) {
+                cols.push(pad(this.matrix[i][j], 2));
+            }
+
+            rows.push(pad(i, 3) + ' [ ' + cols.join(', ') + ' ]');
+        }
+
+        rows.unshift(header);
+
+        console.log('\n' + rows.join('\n') + '\n');
+    }
+
+    /**
+     * Disconnect the directed edge between the origin vertex and the target vertex by denoting a 0
      * in the matrix that correlates to their defined index.
      * If either vertex cannot be found, this will be a no operation.
      *
@@ -221,21 +268,24 @@ export default class AdjacencyMatrix extends Graph {
      */
     removeEdge(a, b, bidi = false) {
         let origin = this.getVertex(a),
-            dest = this.getVertex(b);
+            target = this.getVertex(b);
 
-        if (!origin || !dest) {
+        if (!origin || !target) {
             return this;
         }
 
-        this.matrix[origin.index][dest.index] = 0;
+        // Set directed
+        this.matrix[origin.index][target.index] = 0;
 
-        // Set bi-directional
+        // Set undirected
         if (bidi) {
-            this.matrix[dest.index][origin.index] = 0;
+            this.matrix[target.index][origin.index] = 0;
         }
 
         // Decrease edge count
-        this.edgeSize -= 1;
+        if (!this.matrix[origin.index][target.index] && !this.matrix[target.index][origin.index]) {
+            this.edgeSize -= 1;
+        }
 
         return this;
     }

@@ -81,9 +81,9 @@ export class Vertex extends Node {
 }
 
 export class Edge {
-    constructor(a, b) {
-        this.origin = a;
-        this.destination = b;
+    constructor(origin, target) {
+        this.origin = origin;
+        this.target = target;
         this.directed = true;
         this.selfLoop = false;
         this.weight = 0;
