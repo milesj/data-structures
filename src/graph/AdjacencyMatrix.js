@@ -1,7 +1,4 @@
-import Graph, { Vertex, Edge } from './Graph';
-
-export const BREADTH_FIRST = 'BREADTH_FIRST';
-export const DEPTH_FIRST = 'DEPTH_FIRST';
+import Graph, { Vertex, Edge, BREADTH_FIRST, DEPTH_FIRST } from './Graph';
 
 export default class AdjacencyMatrix extends Graph {
     constructor(capacity) {

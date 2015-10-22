@@ -1,6 +1,9 @@
 import Structure from '../Structure';
 import Node from '../Node';
 
+export const BREADTH_FIRST = 'BREADTH_FIRST';
+export const DEPTH_FIRST = 'DEPTH_FIRST';
+
 export default class Graph extends Structure {
     constructor() {
         super();
