@@ -1,5 +1,8 @@
 import Graph, { Vertex, Edge } from './Graph';
 
+export const BREADTH_FIRST = 'BREADTH_FIRST';
+export const DEPTH_FIRST = 'DEPTH_FIRST';
+
 export default class AdjacencyMatrix extends Graph {
     constructor(capacity) {
         super();
@@ -10,11 +13,7 @@ export default class AdjacencyMatrix extends Graph {
         // Generate the matrix ahead of time
         if (capacity > 0) {
             for (let i = 0; i < capacity; i++) {
-                this.matrix[i] = [];
-
-                for (let j = 0; j < capacity; j++) {
-                    this.matrix[i][j] = 0;
-                }
+                this.matrix[i] = [].fill(0, 0, capacity - 1);
             }
         }
     }
@@ -27,12 +26,12 @@ export default class AdjacencyMatrix extends Graph {
      * @param {*} a
      * @param {*} b
      * @param {Number} weight
-     * @param {Boolean} bidi
+     * @param {Boolean} bidi - Mark this edge as undirected
      * @returns {AdjacencyMatrix}
      */
-    connect(a, b, weight = 1, bidi = false) {
-        let origin = this.vertex(a),
-            dest = this.vertex(b);
+    addEdge(a, b, weight = 1, bidi = false) {
+        let origin = this.getVertex(a),
+            dest = this.getVertex(b);
 
         if (!origin || !dest) {
             return this;
@@ -52,6 +51,21 @@ export default class AdjacencyMatrix extends Graph {
     }
 
     /**
+     * Connect multiple vertices with edges. The value of each item in the array should be an array
+     * of arguments to pass to `addEdge()`.
+     *
+     * @param {[][]} values
+     * @returns {AdjacencyMatrix}
+     */
+    addEdges(values) {
+        for (let args of values) {
+            this.addEdge.apply(this, args);
+        }
+
+        return this;
+    }
+
+    /**
      * Connect both vertices with an undirected edge.
      *
      * @param {*} a
@@ -59,50 +73,8 @@ export default class AdjacencyMatrix extends Graph {
      * @param {Number} weight
      * @returns {AdjacencyMatrix}
      */
-    connectBoth(a, b, weight = 1) {
-        return this.connect(a, b, weight, true);
-    }
-
-    /**
-     * Disconnect the directed edge between the origin vertex and the destination vertex by denoting a 0
-     * in the matrix that correlates to their defined index.
-     * If either vertex cannot be found, this will be a no operation.
-     *
-     * @param {*} a
-     * @param {*} b
-     * @param {Boolean} bidi
-     * @returns {AdjacencyMatrix}
-     */
-    disconnect(a, b, bidi = false) {
-        let origin = this.vertex(a),
-            dest = this.vertex(b);
-
-        if (!origin || !dest) {
-            return this;
-        }
-
-        this.matrix[origin.index][dest.index] = 0;
-
-        // Set bi-directional
-        if (bidi) {
-            this.matrix[dest.index][origin.index] = 0;
-        }
-
-        // Decrease edge count
-        this.edgeSize -= 1;
-
-        return this;
-    }
-
-    /**
-     * Disconnect the edge between two vertices in both directions.
-     *
-     * @param {*} a
-     * @param {*} b
-     * @returns {AdjacencyMatrix}
-     */
-    disconnectBoth(a, b) {
-        return this.disconnect(a, b, true);
+    addUndirectedEdge(a, b, weight = 1) {
+        return this.addEdge(a, b, weight, true);
     }
 
     /**
@@ -112,7 +84,7 @@ export default class AdjacencyMatrix extends Graph {
      * @param {*} value
      * @returns {AdjacencyMatrix}
      */
-    insert(value) {
+    addVertex(value) {
         let vertex = this.createNode(value);
 
         // Set node index
@@ -137,6 +109,167 @@ export default class AdjacencyMatrix extends Graph {
     }
 
     /**
+     * Insert multiple values into the graph.
+     *
+     * @param {*[]} values
+     * @returns {AdjacencyMatrix}
+     */
+    addVertices(values) {
+        values.forEach(this.addVertex.bind(this));
+
+        return this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    getEdges() {
+        let edges = [],
+            edge,
+            edgeCache = new Map(),
+            vertexCache = new Map();
+
+        // Cache each vertex by index
+        for (let vertex of this.vertices) {
+            vertexCache.set(vertex.index, vertex);
+        }
+
+        // Loop over each vertex
+        for (let vertex of this.vertices) {
+
+            // Loop over each edge
+            for (let [index, weight] of this.matrix[vertex.index]) {
+                if (index <= 0) {
+                    continue;
+                }
+
+                // Check cache first
+                edge = edgeCache.get(vertex.index + ':' + index) || edgeCache.get(index + ':' + vertex.index);
+
+                // Create a new edge
+                if (typeof edge === 'undefined') {
+                    edge = new Edge(vertex, vertexCache.get(index));
+                    edge.weight = weight;
+                    edge.selfLoop = (vertex.index === index);
+
+                    // Save the cache
+                    edgeCache.set(vertex.index + ':' + index, edge);
+                    edges.push(edge);
+
+                // Edge already exists
+                } else {
+                    edge.directed = false;
+                    edge.weight = Math.max(edge.weight, weight);
+                }
+            }
+        }
+
+        return edges;
+    }
+
+    /**
+     * Returns true if there is no cycle between vertices.
+     *
+     * @returns {Boolean}
+     */
+    isAcyclic() {
+        return true;
+    }
+
+    /**
+     * Returns true if there is an edge between all vertices.
+     *
+     * @returns {Boolean}
+     */
+    isComplete() {
+        return true;
+    }
+
+    /**
+     * Returns true if there is a path between very pair of vertices.
+     *
+     * @returns {Boolean}
+     */
+    isConnected() {
+        return true;
+    }
+
+    /**
+     * Returns true if all the edges are directed.
+     *
+     * @returns {Boolean}
+     */
+    isDirected() {
+        return true;
+    }
+
+    /**
+     * Returns true if there is a relatively few number of edges (E < |V| log |V|).
+     *
+     * @returns {Boolean}
+     */
+    isSparse() {
+        return true;
+    }
+
+    /**
+     * Disconnect the directed edge between the origin vertex and the destination vertex by denoting a 0
+     * in the matrix that correlates to their defined index.
+     * If either vertex cannot be found, this will be a no operation.
+     *
+     * @param {*} a
+     * @param {*} b
+     * @param {Boolean} bidi
+     * @returns {AdjacencyMatrix}
+     */
+    removeEdge(a, b, bidi = false) {
+        let origin = this.getVertex(a),
+            dest = this.getVertex(b);
+
+        if (!origin || !dest) {
+            return this;
+        }
+
+        this.matrix[origin.index][dest.index] = 0;
+
+        // Set bi-directional
+        if (bidi) {
+            this.matrix[dest.index][origin.index] = 0;
+        }
+
+        // Decrease edge count
+        this.edgeSize -= 1;
+
+        return this;
+    }
+
+    /**
+     * Disconnect multiple edges from vertices. The value of each item in the array should be an array
+     * of arguments to pass to `removeEdge()`.
+     *
+     * @param {[][]} values
+     * @returns {AdjacencyMatrix}
+     */
+    removeEdges(values) {
+        for (let args of values) {
+            this.removeEdge.apply(this, args);
+        }
+
+        return this;
+    }
+
+    /**
+     * Disconnect the edge between two vertices in both directions.
+     *
+     * @param {*} a
+     * @param {*} b
+     * @returns {AdjacencyMatrix}
+     */
+    removeUndirectedEdge(a, b) {
+        return this.removeEdge(a, b, true);
+    }
+
+    /**
      * Remove a vertex and its associated edges from the graph that matches the passed in value.
      * Once the vertex has been removed, set all edges to -1 in the matrix.
      * We can't actually remove the rows and columns as it would cause our indices to get out of sync.
@@ -144,8 +277,8 @@ export default class AdjacencyMatrix extends Graph {
      * @param {*} value
      * @returns {Boolean}
      */
-    remove(value) {
-        let vertex = this.vertex(value);
+    removeVertex(value) {
+        let vertex = this.getVertex(value);
 
         if (!vertex) {
             return false;
@@ -164,5 +297,23 @@ export default class AdjacencyMatrix extends Graph {
         this.vertexSize -= 1;
 
         return true;
+    }
+
+    /**
+     * Remove multiple vertices from the graph.
+     *
+     * @param {*[]} values
+     * @returns {AdjacencyMatrix}
+     */
+    removeVertices(values) {
+        values.forEach(this.removeVertex.bind(this));
+
+        return this;
+    }
+
+    traverse(callback, method = BREADTH_FIRST) {
+        if (this.isEmpty()) {
+            return this;
+        }
     }
 }
