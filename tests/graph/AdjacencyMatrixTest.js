@@ -1,4 +1,5 @@
 import AdjacencyMatrix from '../../src/graph/AdjacencyMatrix';
+import { Vertex, Edge } from '../../src/graph/Graph';
 
 describe('AdjacencyMatrix', () => {
     let graph = null;
@@ -206,7 +207,7 @@ describe('AdjacencyMatrix', () => {
                 [0, 0]
             ]);
 
-            graph.addVertex('C').addVertex('D').addVertex('D');
+            graph.addVertex('C').addVertex('D').addVertex('E');
 
             expect(graph.matrix).toEqual([
                 [0, 0, 0, 0, 0],
@@ -272,6 +273,347 @@ describe('AdjacencyMatrix', () => {
             expect(graph.vertexSize).toBe(2);
             expect(graph.vertices.has('A')).toBe(true);
             expect(graph.vertices.has('B')).toBe(true);
+        });
+    });
+
+    describe('createNode()', () => {
+        it('should create a vertex', () => {
+            let node = graph.createNode('A');
+
+            expect(node instanceof Vertex).toBe(true);
+        });
+    });
+
+    describe('empty()', () => {
+        it('should delete all nodes', () => {
+            expect(graph.isEmpty()).toBe(true);
+
+            graph.addVertices(['A', 'B', 'C']);
+            graph.addUndirectedEdge('A', 'B');
+
+            expect(graph.edgeSize).toBe(1);
+            expect(graph.vertexSize).toBe(3);
+            expect(graph.vertices.size).toBe(3);
+            expect(graph.isEmpty()).toBe(false);
+
+            graph.empty();
+
+            expect(graph.edgeSize).toBe(0);
+            expect(graph.vertexSize).toBe(0);
+            expect(graph.vertices.size).toBe(0);
+            expect(graph.isEmpty()).toBe(true);
+        });
+    });
+
+    describe('getVertex()', () => {
+        it('should return null if not found', () => {
+            expect(graph.getVertex('A')).toBeNull();
+        });
+
+        it('should return the vertex node', () => {
+            graph.addVertices(['A', 'B']);
+
+            let vertex = new Vertex('B');
+                vertex.index = 1;
+
+            expect(graph.getVertex('B')).toEqual(vertex);
+        });
+    });
+
+    describe('getVertices()', () => {
+        it('should return an array of vertex nodes', () => {
+            graph.addVertices(['C', 'B', 'A']);
+
+            let a = new Vertex('A'),
+                b = new Vertex('B'),
+                c = new Vertex('C');
+
+            a.index = 2;
+            b.index = 1;
+            c.index = 0;
+
+            expect(graph.getVertices()).toEqual([c, b, a]);
+        });
+    });
+
+    describe('removeEdge()', () => {
+        it('should remove a directed edge', () => {
+            graph.addVertices(['A', 'B', 'C']);
+            graph.addEdge('A', 'B');
+
+            expect(graph.matrix).toEqual([
+                [0, 1, 0],
+                [0, 0, 0],
+                [0, 0, 0]
+            ]);
+
+            graph.removeEdge('A', 'B');
+
+            expect(graph.matrix).toEqual([
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0]
+            ]);
+        });
+
+        it('should remove an directed edge', () => {
+            graph.addVertices(['A', 'B', 'C']);
+            graph.addUndirectedEdge('A', 'B');
+
+            expect(graph.matrix).toEqual([
+                [0, 1, 0],
+                [1, 0, 0],
+                [0, 0, 0]
+            ]);
+
+            graph.removeEdge('A', 'B', true);
+
+            expect(graph.matrix).toEqual([
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0]
+            ]);
+        });
+
+        it('should do nothing if the vertex does not exist', () => {
+            graph.addVertices(['A', 'B', 'C']);
+            graph.addEdge('A', 'B');
+            graph.removeEdge('A', 'Z');
+
+            expect(graph.matrix).toEqual([
+                [0, 1, 0],
+                [0, 0, 0],
+                [0, 0, 0]
+            ]);
+        });
+
+        it('should do nothing it the vertices are reversed', () => {
+            graph.addVertices(['A', 'B', 'C']);
+            graph.addEdge('A', 'B');
+
+            expect(graph.matrix).toEqual([
+                [0, 1, 0],
+                [0, 0, 0],
+                [0, 0, 0]
+            ]);
+
+            graph.removeEdge('B', 'A');
+
+            expect(graph.matrix).toEqual([
+                [0, 1, 0],
+                [0, 0, 0],
+                [0, 0, 0]
+            ]);
+        });
+
+        it('should decrease size for directed edges', () => {
+            graph.addVertices(['A', 'B', 'C']);
+            graph.addEdge('A', 'B');
+            graph.addEdge('C', 'C');
+
+            expect(graph.edgeSize).toBe(2);
+            expect(graph.matrix).toEqual([
+                [0, 1, 0],
+                [0, 0, 0],
+                [0, 0, 1]
+            ]);
+
+            graph.removeEdge('C', 'C');
+
+            expect(graph.edgeSize).toBe(1);
+            expect(graph.matrix).toEqual([
+                [0, 1, 0],
+                [0, 0, 0],
+                [0, 0, 0]
+            ]);
+
+            graph.removeEdge('A', 'B');
+
+            expect(graph.edgeSize).toBe(0);
+        });
+
+        it('should decrease size for undirected edges', () => {
+            graph.addVertices(['A', 'B', 'C']);
+            graph.addUndirectedEdge('A', 'B');
+            graph.addUndirectedEdge('C', 'A');
+
+            expect(graph.edgeSize).toBe(2);
+            expect(graph.matrix).toEqual([
+                [0, 1, 1],
+                [1, 0, 0],
+                [1, 0, 0]
+            ]);
+
+            graph.removeEdge('A', 'C', true); // Reversed
+
+            expect(graph.edgeSize).toBe(1);
+            expect(graph.matrix).toEqual([
+                [0, 1, 0],
+                [1, 0, 0],
+                [0, 0, 0]
+            ]);
+        });
+
+        it('should not increase size of an edge exists', () => {
+            graph.addVertices(['A', 'B', 'C']);
+            graph.addUndirectedEdge('A', 'B');
+            graph.addUndirectedEdge('C', 'A');
+
+            expect(graph.edgeSize).toBe(2);
+            expect(graph.matrix).toEqual([
+                [0, 1, 1],
+                [1, 0, 0],
+                [1, 0, 0]
+            ]);
+
+            graph.removeEdge('A', 'B');
+
+            expect(graph.edgeSize).toBe(2);
+            expect(graph.matrix).toEqual([
+                [0, 0, 1],
+                [1, 0, 0],
+                [1, 0, 0]
+            ]);
+
+            graph.removeEdge('B', 'A');
+
+            expect(graph.edgeSize).toBe(1);
+        });
+    });
+
+    describe('removeEdges()', () => {
+        it('should remove multiple edges', () => {
+            graph.addVertices(['A', 'B', 'C']);
+            graph.addEdge('A', 'B');
+            graph.addEdge('B', 'B');
+            graph.addEdge('C', 'A');
+
+            expect(graph.matrix).toEqual([
+                [0, 1, 0],
+                [0, 1, 0],
+                [1, 0, 0]
+            ]);
+
+            graph.removeEdges([
+                ['A', 'B'],
+                ['C', 'C'], // Nothing
+                ['B', 'B']
+            ]);
+
+            expect(graph.matrix).toEqual([
+                [0, 0, 0],
+                [0, 0, 0],
+                [1, 0, 0]
+            ]);
+        });
+
+        it('should allow undirected to be removed', () => {
+            graph.addVertices(['A', 'B', 'C']);
+            graph.addEdge('A', 'B');
+            graph.addUndirectedEdge('C', 'A');
+
+            expect(graph.matrix).toEqual([
+                [0, 1, 1],
+                [0, 0, 0],
+                [1, 0, 0]
+            ]);
+
+            graph.removeEdges([
+                ['A', 'B'],
+                ['A', 'C', true]
+            ]);
+
+            expect(graph.matrix).toEqual([
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0]
+            ]);
+        });
+    });
+
+    describe('removeUndirectedEdge()', () => {
+        it('should remove an undirected edge', () => {
+            graph.addVertices(['A', 'B', 'C']);
+            graph.addUndirectedEdge('A', 'B');
+            graph.addUndirectedEdge('C', 'A');
+
+            expect(graph.edgeSize).toBe(2);
+            expect(graph.matrix).toEqual([
+                [0, 1, 1],
+                [1, 0, 0],
+                [1, 0, 0]
+            ]);
+
+            graph.removeUndirectedEdge('A', 'B');
+            graph.removeUndirectedEdge('A', 'C');
+
+            expect(graph.edgeSize).toBe(0);
+            expect(graph.matrix).toEqual([
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0]
+            ]);
+        });
+    });
+
+    describe('removeVertex()', () => {
+        it('should return false if the vertex doesnt exist', () => {
+            expect(graph.removeVertex('A')).toBe(false);
+        });
+
+        it('should remove the reference', () => {
+            expect(graph.vertices.has('A')).toBe(false);
+
+            graph.addVertex('A');
+
+            expect(graph.vertices.has('A')).toBe(true);
+
+            let result = graph.removeVertex('A');
+
+            expect(result).toBe(true);
+            expect(graph.vertices.has('A')).toBe(false);
+        });
+
+        it('should remove edges', () => {
+            graph.addVertices(['A', 'B', 'C']);
+            graph.addUndirectedEdge('A', 'B');
+            graph.addEdge('B', 'C');
+
+            expect(graph.matrix).toEqual([
+                [0, 1, 0],
+                [1, 0, 1],
+                [0, 0, 0]
+            ]);
+
+            graph.removeVertex('B');
+
+            expect(graph.matrix).toEqual([
+                [0, 0, 0],
+                [0, 0, 0],
+                [0, 0, 0]
+            ]);
+        });
+
+        it('should decrease the size', () => {
+            graph.addVertices(['A', 'B', 'C']);
+
+            expect(graph.vertexSize).toBe(3);
+
+            graph.removeVertex('B');
+
+            expect(graph.vertexSize).toBe(2);
+        });
+    });
+
+    describe('removeVertices()', () => {
+        it('should remove multiple vertices', () => {
+            graph.addVertices(['A', 'B', 'C', 'D', 'E']);
+
+            expect(graph.vertexSize).toBe(5);
+
+            graph.removeVertices(['A', 'C', 'F']);
+
+            expect(graph.vertexSize).toBe(3);
         });
     });
 });

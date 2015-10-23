@@ -332,12 +332,12 @@ export default class AdjacencyMatrix extends Graph {
         }
 
         // Remove reference
-        this.vertices.remove(value);
+        this.vertices.delete(value);
 
-        // Remove edges by setting all rows and columns to -1
+        // Remove edges
         for (let i = 0, index = vertex.index; i < this.vertexSize; i++) {
-            this.matrix[index][i] = -1; // Row
-            this.matrix[i][index] = -1; // Column
+            this.matrix[index][i] = 0; // Row
+            this.matrix[i][index] = 0; // Column
         }
 
         // Decrease size

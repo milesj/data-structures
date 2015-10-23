@@ -60,7 +60,7 @@ export default class Graph extends Structure {
     getVertices() {
         let vertices = [];
 
-        for (let vertex of this.vertices) {
+        for (let vertex of this.vertices.values()) {
             vertices.push(vertex);
         }
 
@@ -73,11 +73,17 @@ export default class Graph extends Structure {
      * @returns {Boolean}
      */
     isEmpty() {
-        return (this.vertexSize === 0);
+        return (this.vertexSize === 0 && this.edgeSize === 0);
     }
 }
 
 export class Vertex extends Node {
+    constructor(value) {
+        super(value);
+
+        this.edges = [];
+        this.index = 0;
+    }
 }
 
 export class Edge {
