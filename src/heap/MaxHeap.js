@@ -6,7 +6,7 @@ import Heap from './Heap';
 export default class MaxHeap extends Heap {
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     compare(node, parentNode) {
         return (node && parentNode && node.key >= parentNode.key);

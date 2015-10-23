@@ -4,6 +4,25 @@ import Node from '../Node';
 export const BREADTH_FIRST = 'BREADTH_FIRST';
 export const DEPTH_FIRST = 'DEPTH_FIRST';
 
+export class Vertex extends Node {
+    constructor(value) {
+        super(value);
+
+        this.edges = [];
+        this.index = 0;
+    }
+}
+
+export class Edge {
+    constructor(origin, target) {
+        this.origin = origin;
+        this.target = target;
+        this.directed = true;
+        this.selfLoop = false;
+        this.weight = 0;
+    }
+}
+
 export default class Graph extends Structure {
     constructor() {
         super();
@@ -14,7 +33,7 @@ export default class Graph extends Structure {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     createNode(value) {
         return new Vertex(value);
@@ -74,24 +93,5 @@ export default class Graph extends Structure {
      */
     isEmpty() {
         return (this.vertexSize === 0 && this.edgeSize === 0);
-    }
-}
-
-export class Vertex extends Node {
-    constructor(value) {
-        super(value);
-
-        this.edges = [];
-        this.index = 0;
-    }
-}
-
-export class Edge {
-    constructor(origin, target) {
-        this.origin = origin;
-        this.target = target;
-        this.directed = true;
-        this.selfLoop = false;
-        this.weight = 0;
     }
 }

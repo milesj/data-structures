@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: 0 */
+
 import Collection from '../Collection';
 import { isObject } from '../helpers';
 
@@ -43,7 +45,7 @@ export default class HashTable extends Collection {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     [Symbol.iterator]() {
         return this.items[Symbol.iterator]();
@@ -60,7 +62,7 @@ export default class HashTable extends Collection {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     empty() {
         this.items.clear();
@@ -135,20 +137,16 @@ export default class HashTable extends Collection {
         if (this.hasBucket(key)) {
             this.getBucket(key).push(value);
 
-        // Doesn't exist yet
+        // Too many buckets
+        } else if (this.isFull()) {
+            this.error('{class} is full; too many buckets');
+
+        // Create the bucket
         } else {
+            this.items.set(key, [value]);
 
-            // Too many buckets
-            if (this.isFull()) {
-                this.error('{class} is full; too many buckets');
-
-            // Create the bucket
-            } else {
-                this.items.set(key, [value]);
-
-                // Increase bucket size
-                this.size += 1;
-            }
+            // Increase bucket size
+            this.size += 1;
         }
 
         // Increase item size
@@ -179,14 +177,15 @@ export default class HashTable extends Collection {
     remove(value) {
         let key = this.hash(value),
             bucket = this.getBucket(key),
-            result = false;
+            result = false,
+            index = -1;
 
         if (!bucket.length) {
             return result;
         }
 
         // Remove the value
-        let index = bucket.indexOf(value);
+        index = bucket.indexOf(value);
 
         if (index >= 0) {
             bucket.splice(index, 1);

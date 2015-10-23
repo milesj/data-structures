@@ -2,6 +2,17 @@ import Collection from '../Collection';
 import Node from '../Node';
 
 /**
+ * @property {LinkedListNode|null} next
+ */
+export class LinkedListNode extends Node {
+    constructor(data) {
+        super(data);
+
+        this.next = null;
+    }
+}
+
+/**
  * A `LinkedList` is a data structure consisting of a group of nodes, linked through references,
  * which together represent a sequence.
  *
@@ -21,7 +32,7 @@ export default class LinkedList extends Collection {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     [Symbol.iterator]() {
         let curNode = this.head,
@@ -31,12 +42,12 @@ export default class LinkedList extends Collection {
             next() {
                 if (!curNode) {
                     return { done: true };
-                } else {
-                    node = curNode;
-                    curNode = curNode.next;
-
-                    return { value: node.value };
                 }
+
+                node = curNode;
+                curNode = curNode.next;
+
+                return { value: node.value };
             }
         };
     }
@@ -84,14 +95,14 @@ export default class LinkedList extends Collection {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     createNode(value) {
         return new LinkedListNode(value);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     empty() {
         this.head = this.tail = null;
@@ -128,6 +139,7 @@ export default class LinkedList extends Collection {
             index++;
         }
 
+        /* eslint no-magic-numbers: 0 */
         return -1;
     }
 
@@ -359,10 +371,8 @@ export default class LinkedList extends Collection {
             return this.removeFirst();
         }
 
-        let tail = this.tail;
-
-        // Set the 2nd to last node to null
-        let prevNode = this.head;
+        let tail = this.tail,
+            prevNode = this.head; // Set the 2nd to last node to null
 
         while (prevNode) {
             if (prevNode.next === this.tail) {
@@ -402,7 +412,7 @@ export default class LinkedList extends Collection {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     toArray() {
         let array = [];
@@ -489,16 +499,5 @@ export default class LinkedList extends Collection {
         this.tail = node;
 
         return node;
-    }
-}
-
-/**
- * @property {LinkedListNode|null} next
- */
-export class LinkedListNode extends Node {
-    constructor(data) {
-        super(data);
-
-        this.next = null;
     }
 }

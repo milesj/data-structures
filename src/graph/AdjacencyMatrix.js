@@ -74,7 +74,7 @@ export default class AdjacencyMatrix extends Graph {
      */
     addEdges(values) {
         for (let args of values) {
-            this.addEdge.apply(this, args);
+            this.addEdge(...args);
         }
 
         return this;
@@ -140,11 +140,11 @@ export default class AdjacencyMatrix extends Graph {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     getEdges() {
         let edges = [],
-            edge,
+            edge = null,
             edgeCache = new Map(),
             vertexCache = new Map();
 
@@ -155,7 +155,6 @@ export default class AdjacencyMatrix extends Graph {
 
         // Loop over each vertex
         for (let vertex of this.vertices) {
-
             // Loop over each edge
             for (let [index, weight] of this.matrix[vertex.index]) {
                 if (index <= 0) {
@@ -235,6 +234,8 @@ export default class AdjacencyMatrix extends Graph {
      * Log a visual representation of the graph to the console.
      */
     log() {
+        /* eslint no-console: 0, no-magic-numbers: 0 */
+
         let header = '      ',
             rows = [],
             cols = [],
@@ -299,7 +300,7 @@ export default class AdjacencyMatrix extends Graph {
      */
     removeEdges(values) {
         for (let args of values) {
-            this.removeEdge.apply(this, args);
+            this.removeEdge(...args);
         }
 
         return this;

@@ -2,6 +2,21 @@ import MinHeap from '../heap/MinHeap';
 import Node from '../Node';
 import { isObject } from '../helpers';
 
+export const DEFAULT_PRIORITY = 100;
+
+/**
+ * Change the node's key name to "priority" instead of "key".
+ */
+export class PriorityQueueNode extends Node {
+
+    /**
+     * @inheritdoc
+     */
+    keyName() {
+        return 'priority';
+    }
+}
+
 /**
  * A `PriorityQueue` is a queue like data structure that processes items in order based on a priority level.
  * The lower the priority level number, the faster it will be processed -- for example, 1 has the highest priority.
@@ -13,7 +28,7 @@ import { isObject } from '../helpers';
 export default class PriorityQueue extends MinHeap {
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     createNode(data) {
         return new PriorityQueueNode(data);
@@ -59,7 +74,7 @@ export default class PriorityQueue extends MinHeap {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      *
      * An optional priority can be defined as the second argument, which will be appended to the
      * value if it is an object, and if the object does not already contain a priority.
@@ -70,22 +85,9 @@ export default class PriorityQueue extends MinHeap {
      */
     push(value, priority) {
         if (isObject(value) && typeof value.priority === 'undefined') {
-            value.priority = priority || 100 + this.size;
+            value.priority = priority || DEFAULT_PRIORITY + this.size;
         }
 
         return super.push(value);
-    }
-}
-
-/**
- * Change the node's key name to "priority" instead of "key".
- */
-export class PriorityQueueNode extends Node {
-
-    /**
-     * {@inheritdoc}
-     */
-    keyName() {
-        return 'priority';
     }
 }

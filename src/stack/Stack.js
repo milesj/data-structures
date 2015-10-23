@@ -37,12 +37,13 @@ export default class Stack extends Collection {
      * @returns {Number}
      */
     indexOf(value) {
-        for (var i = 0; i < this.size; i++) {
+        for (let i = 0; i < this.size; i++) {
             if (this.items[i].value === value) {
                 return i;
             }
         }
 
+        /* eslint no-magic-numbers: 0 */
         return -1;
     }
 

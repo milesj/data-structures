@@ -1,3 +1,5 @@
+/* eslint no-magic-numbers: 0 */
+
 import Structure from '../Structure';
 import Comparator from '../Comparator';
 

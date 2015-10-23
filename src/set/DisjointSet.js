@@ -1,6 +1,23 @@
 import Collection from '../Collection';
 
 /**
+ * Don't inherit from `Node` as we don't want its constructor functionality.
+ *
+ * @property {Number} key
+ * @property {*} value
+ * @property {Number} parent
+ * @property {Number} rank
+ */
+export class DisjointSetNode {
+    constructor(key, value) {
+        this.key = key;
+        this.value = value;
+        this.parent = key;
+        this.rank = 0;
+    }
+}
+
+/**
  * A `DisjointSet` is a data structure that keeps track of a set of elements partitioned
  * into a number of disjoint (non-overlapping) subsets.
  *
@@ -22,21 +39,21 @@ export default class DisjointSet extends Collection {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     [Symbol.iterator]() {
         return this.cache.keys();
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     createNode(value) {
         return new DisjointSetNode(this.size, value);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     empty() {
         this.cache.clear();
@@ -58,7 +75,8 @@ export default class DisjointSet extends Collection {
         }
 
         let index = this.cache.get(value),
-            node = this.items.get(index);
+            node = this.items.get(index),
+            repNode = null;
 
         // Return the node if it's the representative
         if (node.parent === index) {
@@ -66,7 +84,7 @@ export default class DisjointSet extends Collection {
         }
 
         // Use path compression to keep the tree shallow
-        let repNode = this.find(this.items.get(node.parent).value);
+        repNode = this.find(this.items.get(node.parent).value);
 
         // Set the initial nodes parent to the representative
         node.parent = repNode.key;
@@ -81,7 +99,8 @@ export default class DisjointSet extends Collection {
      */
     groups() {
         let sets = new Map(),
-            repNode;
+            repNode = null,
+            groups = [];
 
         for (let value of this.cache.keys()) {
             repNode = this.find(value);
@@ -95,8 +114,6 @@ export default class DisjointSet extends Collection {
         }
 
         // Do another loop as we want to return an array
-        let groups = [];
-
         for (let group of sets.values()) {
             groups.push(group);
         }
@@ -213,22 +230,5 @@ export default class DisjointSet extends Collection {
         }
 
         return this;
-    }
-}
-
-/**
- * Don't inherit from `Node` as we don't want its constructor functionality.
- *
- * @property {Number} key
- * @property {*} value
- * @property {Number} parent
- * @property {Number} rank
- */
-export class DisjointSetNode {
-    constructor(key, value) {
-        this.key = key;
-        this.value = value;
-        this.parent = key;
-        this.rank = 0;
     }
 }

@@ -25,6 +25,8 @@ export default class Collection extends Structure {
 
     /**
      * Iterate over all the items in the collection.
+     *
+     * @returns {Object}
      */
     [Symbol.iterator]() {
         let items = this.items,
@@ -35,9 +37,9 @@ export default class Collection extends Structure {
             next() {
                 if (i === size) {
                     return { done: true };
-                } else {
-                    return { value: items[i++].value };
                 }
+
+                return { value: items[i++].value };
             }
         };
     }

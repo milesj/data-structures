@@ -28,9 +28,7 @@ export default class Node {
         // Objects
         if (isObject(data)) {
             this.value = data;
-            this.key = (typeof data.getNodeKey === 'function')
-                ? data.getNodeKey.call(data, keyName)
-                : data[keyName];
+            this.key = (typeof data.getNodeKey === 'function') ? data.getNodeKey(keyName) : data[keyName];
 
         // Strings, Integers
         } else if (data !== '' && type === 'string' || type === 'number') {

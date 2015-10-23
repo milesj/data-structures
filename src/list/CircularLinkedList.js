@@ -7,7 +7,7 @@ import LinkedList from './LinkedList';
 export default class CircularLinkedList extends LinkedList {
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     [Symbol.iterator]() {
         let head = this.head,
@@ -19,19 +19,19 @@ export default class CircularLinkedList extends LinkedList {
             next() {
                 if (!curNode || curNode === head && i !== 0) {
                     return { done: true };
-                } else {
-                    node = curNode;
-                    curNode = curNode.next;
-                    i++;
-
-                    return { value: node.value };
                 }
+
+                node = curNode;
+                curNode = curNode.next;
+                i++;
+
+                return { value: node.value };
             }
         };
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     _appendNode(node, tailNode) {
         node.next = this.head;
@@ -40,7 +40,7 @@ export default class CircularLinkedList extends LinkedList {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     _prependNode(node, headNode) {
         this.tail.next = node;
@@ -49,7 +49,7 @@ export default class CircularLinkedList extends LinkedList {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     _removeNode(node, nextNode, previousNode) {
         if (node === this.head) {
@@ -66,7 +66,7 @@ export default class CircularLinkedList extends LinkedList {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     _setRootNode(node) {
         node.next = node;

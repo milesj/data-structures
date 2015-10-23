@@ -8,6 +8,370 @@ export const POST_ORDER = 'POST_ORDER';
 export const LEVEL_ORDER = 'LEVEL_ORDER';
 
 /**
+ * @property {BinaryTreeNode|null} left
+ * @property {BinaryTreeNode|null} right
+ */
+export class BinaryTreeNode extends Node {
+    constructor(data) {
+        super(data);
+
+        this.left = null;
+        this.right = null;
+    }
+
+    /**
+     * Return the depth of this node to the child node that matches the value.
+     *
+     * @param {*} value
+     * @param {Comparator} comparator
+     * @returns {Number}
+     */
+    depth(value, comparator) {
+        /* eslint no-magic-numbers: 0 */
+
+        let depth = -1;
+
+        if (comparator.equals(value, this.key)) {
+            return 0;
+
+        } else if (comparator.greaterThan(value, this.key)) {
+            if (this.right) {
+                depth = this.right.depth(value, comparator);
+
+            } else {
+                return -1;
+            }
+
+        } else if (comparator.lessThan(value, this.key)) {
+            if (this.left) {
+                depth = this.left.depth(value, comparator);
+
+            } else {
+                return -1;
+            }
+        }
+
+        // Allow missing values to bubble up
+        if (depth === -1) {
+            return -1;
+        }
+
+        return depth + 1;
+    }
+
+    /**
+     * Drill down into the tree and attempt to find all nodes at a specific level.
+     * If a level is found, push the node onto the queue.
+     *
+     * @param {Number} targetLevel
+     * @param {Number} curLevel
+     * @param {Queue} queue
+     */
+    drill(targetLevel, curLevel, queue) {
+        if (curLevel === targetLevel) {
+            queue.enqueue(this);
+            return;
+        }
+
+        if (this.left) {
+            this.left.drill(targetLevel, curLevel + 1, queue);
+        }
+
+        if (this.right) {
+            this.right.drill(targetLevel, curLevel + 1, queue);
+        }
+    }
+
+    /**
+     * Return the height of this node to the deepest child node.
+     *
+     * @returns {Number}
+     */
+    height() {
+        /* eslint no-magic-numbers: 0 */
+
+        let leftHeight = this.left ? this.left.height() : -1,
+            rightHeight = this.right ? this.right.height() : -1;
+
+        return Math.max(leftHeight, rightHeight) + 1;
+    }
+
+    /**
+     * Recursively traverse nodes using the in-order algorithm.
+     *
+     * @param {Function} callback
+     */
+    inOrder(callback) {
+        /* eslint callback-return: 0 */
+
+        if (typeof callback !== 'function') {
+            this.error('Traversal callback must be a function');
+        }
+
+        if (this.left) {
+            this.left.inOrder(callback);
+        }
+
+        if (callback(this.key, this) === true) {
+            return;
+        }
+
+        if (this.right) {
+            this.right.inOrder(callback);
+        }
+    }
+
+    /**
+     * Insert the node in either the left or right sub-tree.
+     *
+     * @param {BinaryTreeNode} node
+     * @param {Comparator} comparator
+     */
+    insert(node, comparator) {
+        /* eslint no-lonely-if: 0 */
+
+        if (!node instanceof BinaryTreeNode) {
+            this.error('Insertion requires a valid node');
+        }
+
+        // Insert into right sub-tree if greater
+        if (comparator.greaterThan(node.key, this.key)) {
+            if (this.right) {
+                this.right.insert(node, comparator);
+
+            } else {
+                this.right = node;
+            }
+
+        // Insert into left sub-tree if lower
+        } else {
+            if (this.left) {
+                this.left.insert(node, comparator);
+
+            } else {
+                this.left = node;
+            }
+        }
+    }
+
+    /**
+     * Returns true if the node has 0 children.
+     *
+     * @returns {Boolean}
+     */
+    isEmpty() {
+        return (!this.left && !this.right);
+    }
+
+    /**
+     * Returns true if the node has 2 children.
+     *
+     * @returns {Boolean}
+     */
+    isFull() {
+        return (this.left && this.right);
+    }
+
+    /**
+     * Returns true if the node has only a left child.
+     *
+     * @returns {Boolean}
+     */
+    isSkewedLeft() {
+        return (this.left && !this.right);
+    }
+
+    /**
+     * Returns true if the node has only a right child.
+     *
+     * @returns {Boolean}
+     */
+    isSkewedRight() {
+        return (!this.left && this.right);
+    }
+
+    /**
+     * Log a visual representation of the tree to the console.
+     *
+     * @param {Boolean} isRight
+     * @param {String} indent
+     */
+    log(isRight, indent = '') {
+        /* eslint no-console: 0 */
+
+        if (this.right) {
+            this.right.log(true, indent + (isRight ? '        ' : ' |      '));
+        }
+
+        console.log(indent + (isRight ? ' /' : ' \\') + '----- ' + this.key);
+
+        if (this.left) {
+            this.left.log(false, indent + (isRight ? ' |      ' : '        '));
+        }
+    }
+
+    /**
+     * Returns the node with the highest value found in the descendant tree.
+     *
+     * @param {BinaryTreeNode} node
+     * @returns {BinaryTreeNode}
+     */
+    max(node) {
+        return node.right ? this.max(node.right) : node;
+    }
+
+    /**
+     * Returns the node with the lowest value found in the descendant tree.
+     *
+     * @param {BinaryTreeNode} node
+     * @returns {BinaryTreeNode}
+     */
+    min(node) {
+        return node.left ? this.min(node.left) : node;
+    }
+
+    /**
+     * Recursively traverse nodes using the post-order algorithm.
+     *
+     * @param {Function} callback
+     */
+    postOrder(callback) {
+        if (typeof callback !== 'function') {
+            this.error('Traversal callback must be a function');
+        }
+
+        if (this.left) {
+            this.left.postOrder(callback);
+        }
+
+        if (this.right) {
+            this.right.postOrder(callback);
+        }
+
+        callback(this.key, this);
+    }
+
+    /**
+     * Recursively traverse nodes using the pre-order algorithm.
+     *
+     * @param {Function} callback
+     */
+    preOrder(callback) {
+        /* eslint callback-return: 0 */
+
+        if (typeof callback !== 'function') {
+            this.error('Traversal callback must be a function');
+        }
+
+        if (callback(this.key, this) === true) {
+            return;
+        }
+
+        if (this.left) {
+            this.left.preOrder(callback);
+        }
+
+        if (this.right) {
+            this.right.preOrder(callback);
+        }
+    }
+
+    /**
+     * Remove the value from the node or the descendant tree.
+     *
+     * @param {*} value - The value to remove
+     * @param {BinaryTreeNode} parentNode - The parent node to modify
+     * @param {Comparator} comparator
+     * @returns {Boolean}
+     */
+    remove(value, parentNode, comparator) {
+        /* eslint no-else-return: 0 */
+
+        if (comparator.equals(value, this.key)) {
+            if (this.isFull()) {
+                let newNode = this.min(this.right);
+
+                this.key = newNode.key;
+                this.value = newNode.value;
+                this.right.remove(this.key, this, comparator);
+
+            } else if (parentNode.left === this) {
+                parentNode.left = this.left || this.right || null;
+
+            } else if (parentNode.right === this) {
+                parentNode.right = this.left || this.right || null;
+            }
+
+            return true;
+
+        // Search right tree
+        } else if (comparator.greaterThan(value, this.key)) {
+            if (this.right) {
+                return this.right.remove(value, this, comparator);
+            }
+
+            return false;
+
+        // Search left tree
+        } else {
+            if (this.left) {
+                return this.left.remove(value, this, comparator);
+            }
+
+            return false;
+        }
+    }
+
+    /**
+     * Recursively search for a node that matches the defined value, or return null if none found.
+     *
+     * @param {*} value
+     * @param {Comparator} comparator
+     * @returns {BinaryTreeNode|null}
+     */
+    search(value, comparator) {
+        /* eslint no-else-return: 0 */
+
+        if (comparator.equals(value, this.key)) {
+            return this;
+
+        } else if (comparator.greaterThan(value, this.key)) {
+            if (this.right) {
+                return this.right.search(value, comparator);
+            }
+
+            return null;
+
+        } else {
+            if (this.left) {
+                return this.left.search(value, comparator);
+            }
+
+            return null;
+        }
+    }
+
+    /**
+     * Returns a count of all descendant child nodes including itself.
+     *
+     * @returns {Number}
+     */
+    size() {
+        let size = 1;
+
+        if (this.left) {
+            size += this.left.size();
+        }
+
+        if (this.right) {
+            size += this.right.size();
+        }
+
+        return size;
+    }
+}
+
+/**
  * A `BinaryTree` is a specialized `Tree` in which every node has at most 2 children, a left and right child.
  * This structure also satisfies the binary search tree implementation.
  *
@@ -27,14 +391,14 @@ export default class BinaryTree extends Tree {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     createNode(data) {
         return new BinaryTreeNode(data);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     depth(value) {
         return this.isEmpty() ? -1 : this.root.depth(value, this.comparator());
@@ -96,7 +460,7 @@ export default class BinaryTree extends Tree {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     height(value) {
         let node = this.search(value);
@@ -118,7 +482,7 @@ export default class BinaryTree extends Tree {
         if (this.isEmpty()) {
             this.root = node;
 
-        // Insert onto the root node directly
+            // Insert onto the root node directly
         } else {
             this.root.insert(node, this.comparator());
         }
@@ -301,6 +665,8 @@ export default class BinaryTree extends Tree {
      * Log a visual representation of the tree to the console.
      */
     log() {
+        /* eslint no-console: 0 */
+
         let root = this.root;
 
         if (root) {
@@ -328,7 +694,7 @@ export default class BinaryTree extends Tree {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     maxDepth() {
         return this.isEmpty() ? -1 : this.root.height();
@@ -367,13 +733,14 @@ export default class BinaryTree extends Tree {
         // Remove the root node
         if (this.root.key === value) {
             let tempRoot = this.createNode(value);
-                tempRoot.left = this.root;
+
+            tempRoot.left = this.root;
 
             result = this.root.remove(value, tempRoot, this.comparator());
 
             this.root = tempRoot.left;
 
-        // Remove a child
+            // Remove a child
         } else {
             result = this.root.remove(value, null, this.comparator());
         }
@@ -435,6 +802,8 @@ export default class BinaryTree extends Tree {
      * @returns {BinaryTree}
      */
     traverse(callback, method = LEVEL_ORDER) {
+        /* eslint callback-return: 0 */
+
         if (this.isEmpty()) {
             return this;
         }
@@ -453,7 +822,7 @@ export default class BinaryTree extends Tree {
                 break;
 
             case LEVEL_ORDER:
-                let node,
+                let node = null,
                     queue = new Queue();
 
                 queue.enqueue(this.root);
@@ -482,357 +851,5 @@ export default class BinaryTree extends Tree {
         }
 
         return this;
-    }
-}
-
-/**
- * @property {BinaryTreeNode|null} left
- * @property {BinaryTreeNode|null} right
- */
-export class BinaryTreeNode extends Node {
-    constructor(data) {
-        super(data);
-
-        this.left = null;
-        this.right = null;
-    }
-
-    /**
-     * Return the depth of this node to the child node that matches the value.
-     *
-     * @param {*} value
-     * @param {Comparator} comparator
-     * @returns {Number}
-     */
-    depth(value, comparator) {
-        let depth = -1;
-
-        if (comparator.equals(value, this.key)) {
-            return 0;
-
-        } else if (comparator.greaterThan(value, this.key)) {
-            if (this.right) {
-                depth = this.right.depth(value, comparator);
-
-            } else {
-                return -1;
-            }
-
-        } else if (comparator.lessThan(value, this.key)) {
-            if (this.left) {
-                depth = this.left.depth(value, comparator);
-
-            } else {
-                return -1;
-            }
-        }
-
-        // Allow missing values to bubble up
-        if (depth === -1) {
-            return -1;
-        }
-
-        return depth + 1;
-    }
-
-    /**
-     * Drill down into the tree and attempt to find all nodes at a specific level.
-     * If a level is found, push the node onto the queue.
-     *
-     * @param {Number} targetLevel
-     * @param {Number} curLevel
-     * @param {Queue} queue
-     */
-    drill(targetLevel, curLevel, queue) {
-        if (curLevel === targetLevel) {
-            queue.enqueue(this);
-            return;
-        }
-
-        if (this.left) {
-            this.left.drill(targetLevel, curLevel + 1, queue);
-        }
-
-        if (this.right) {
-            this.right.drill(targetLevel, curLevel + 1, queue);
-        }
-    }
-
-    /**
-     * Return the height of this node to the deepest child node.
-     *
-     * @returns {Number}
-     */
-    height() {
-        let leftHeight = this.left ? this.left.height() : -1,
-            rightHeight = this.right ? this.right.height() : -1;
-
-        return Math.max(leftHeight, rightHeight) + 1;
-    }
-
-    /**
-     * Recursively traverse nodes using the in-order algorithm.
-     *
-     * @param {Function} callback
-     */
-    inOrder(callback) {
-        if (typeof callback !== 'function') {
-            this.error('Traversal callback must be a function');
-        }
-
-        if (this.left) {
-            this.left.inOrder(callback);
-        }
-
-        if (callback(this.key, this) === true) {
-            return;
-        }
-
-        if (this.right) {
-            this.right.inOrder(callback);
-        }
-    }
-
-    /**
-     * Insert the node in either the left or right sub-tree.
-     *
-     * @param {BinaryTreeNode} node
-     * @param {Comparator} comparator
-     */
-    insert(node, comparator) {
-        if (!node instanceof BinaryTreeNode) {
-            this.error('Insertion requires a valid node');
-        }
-
-        // Insert into right sub-tree if greater
-        if (comparator.greaterThan(node.key, this.key)) {
-            if (!this.right) {
-                this.right = node;
-
-            } else {
-                this.right.insert(node, comparator);
-            }
-
-        // Insert into left sub-tree if lower
-        } else {
-            if (!this.left) {
-                this.left = node;
-
-            } else {
-                this.left.insert(node, comparator);
-            }
-        }
-    }
-
-    /**
-     * Returns true if the node has 0 children.
-     *
-     * @returns {Boolean}
-     */
-    isEmpty() {
-        return (!this.left && !this.right);
-    }
-
-    /**
-     * Returns true if the node has 2 children.
-     *
-     * @returns {Boolean}
-     */
-    isFull() {
-        return (this.left && this.right);
-    }
-
-    /**
-     * Returns true if the node has only a left child.
-     *
-     * @returns {Boolean}
-     */
-    isSkewedLeft() {
-        return (this.left && !this.right);
-    }
-
-    /**
-     * Returns true if the node has only a right child.
-     *
-     * @returns {Boolean}
-     */
-    isSkewedRight() {
-        return (!this.left && this.right);
-    }
-
-    /**
-     * Log a visual representation of the tree to the console.
-     *
-     * @param {Boolean} isRight
-     * @param {String} indent
-     */
-    log(isRight, indent = '') {
-        if (this.right) {
-            this.right.log(true, indent + (isRight ? '        ' : ' |      '));
-        }
-
-        console.log(indent + (isRight ? ' /' : ' \\') + '----- ' + this.key);
-
-        if (this.left) {
-            this.left.log(false, indent + (isRight ? ' |      ' : '        '));
-        }
-    }
-
-    /**
-     * Returns the node with the highest value found in the descendant tree.
-     *
-     * @param {BinaryTreeNode} node
-     * @returns {BinaryTreeNode}
-     */
-    max(node) {
-        return node.right ? this.max(node.right) : node;
-    }
-
-    /**
-     * Returns the node with the lowest value found in the descendant tree.
-     *
-     * @param {BinaryTreeNode} node
-     * @returns {BinaryTreeNode}
-     */
-    min(node) {
-        return node.left ? this.min(node.left) : node;
-    }
-
-    /**
-     * Recursively traverse nodes using the post-order algorithm.
-     *
-     * @param {Function} callback
-     */
-    postOrder(callback) {
-        if (typeof callback !== 'function') {
-            this.error('Traversal callback must be a function');
-        }
-
-        if (this.left) {
-            this.left.postOrder(callback);
-        }
-
-        if (this.right) {
-            this.right.postOrder(callback);
-        }
-
-        callback(this.key, this);
-    }
-
-    /**
-     * Recursively traverse nodes using the pre-order algorithm.
-     *
-     * @param {Function} callback
-     */
-    preOrder(callback) {
-        if (typeof callback !== 'function') {
-            this.error('Traversal callback must be a function');
-        }
-
-        if (callback(this.key, this) === true) {
-            return;
-        }
-
-        if (this.left) {
-            this.left.preOrder(callback);
-        }
-
-        if (this.right) {
-            this.right.preOrder(callback);
-        }
-    }
-
-    /**
-     * Remove the value from the node or the descendant tree.
-     *
-     * @param {*} value - The value to remove
-     * @param {BinaryTreeNode} parentNode - The parent node to modify
-     * @param {Comparator} comparator
-     * @returns {Boolean}
-     */
-    remove(value, parentNode, comparator) {
-        if (comparator.equals(value, this.key)) {
-            if (this.isFull()) {
-                let newNode = this.min(this.right);
-
-                this.key = newNode.key;
-                this.value = newNode.value;
-                this.right.remove(this.key, this, comparator);
-
-            } else if (parentNode.left === this) {
-                parentNode.left = this.left || this.right || null;
-
-            } else if (parentNode.right === this) {
-                parentNode.right = this.left || this.right || null;
-            }
-
-            return true;
-
-        // Search right tree
-        } else if (comparator.greaterThan(value, this.key)) {
-            if (this.right) {
-                return this.right.remove(value, this, comparator);
-
-            } else {
-                return false;
-            }
-
-        // Search left tree
-        } else {
-            if (this.left) {
-                return this.left.remove(value, this, comparator);
-
-            } else {
-                return false;
-            }
-        }
-    }
-
-    /**
-     * Recursively search for a node that matches the defined value, or return null if none found.
-     *
-     * @param {*} value
-     * @param {Comparator} comparator
-     * @returns {BinaryTreeNode|null}
-     */
-    search(value, comparator) {
-        if (comparator.equals(value, this.key)) {
-            return this;
-
-        } else if (comparator.greaterThan(value, this.key)) {
-            if (this.right) {
-                return this.right.search(value, comparator);
-
-            } else {
-                return null;
-            }
-
-        } else {
-            if (this.left) {
-                return this.left.search(value, comparator);
-
-            } else {
-                return null;
-            }
-        }
-    }
-
-    /**
-     * Returns a count of all descendant child nodes including itself.
-     *
-     * @returns {Number}
-     */
-    size() {
-        let size = 1;
-
-        if (this.left) {
-            size += this.left.size();
-        }
-
-        if (this.right) {
-            size += this.right.size();
-        }
-
-        return size;
     }
 }

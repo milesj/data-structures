@@ -6,7 +6,7 @@ import Heap from './Heap';
 export default class MinHeap extends Heap {
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     compare(node, parentNode) {
         return (node && parentNode && node.key <= parentNode.key);

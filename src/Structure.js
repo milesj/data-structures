@@ -24,12 +24,14 @@ export default class Structure {
      * @param {Object} params
      */
     error(message, params = {}) {
-        params['class'] = this.constructor.name;
+        params.class = this.constructor.name;
+
+        let errorMessage = message;
 
         Object.keys(params).forEach(key => {
-            message = message.replace('{' + key + '}', params[key]);
+            errorMessage = errorMessage.replace('{' + key + '}', params[key]);
         });
 
-        throw new Error(message);
+        throw new Error(errorMessage);
     }
 }

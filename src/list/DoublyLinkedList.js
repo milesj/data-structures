@@ -2,20 +2,33 @@ import LinkedList from './LinkedList';
 import Node from '../Node';
 
 /**
+ * @property {DoublyLinkedListNode|null} next
+ * @property {DoublyLinkedListNode|null} prev
+ */
+export class DoublyLinkedListNode extends Node {
+    constructor(data) {
+        super(data);
+
+        this.next = null;
+        this.prev = null;
+    }
+}
+
+/**
  * A `DoublyLinkedList` is a specialized `LinkedList` in which each node keeps a reference to the
  * previous node in the chain.
  */
 export default class DoublyLinkedList extends LinkedList {
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     createNode(data) {
         return new DoublyLinkedListNode(data);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     removeLast() {
         if (this.isEmpty()) {
@@ -37,7 +50,7 @@ export default class DoublyLinkedList extends LinkedList {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     _appendNode(node, tailNode) {
         node.prev = tailNode;
@@ -46,7 +59,7 @@ export default class DoublyLinkedList extends LinkedList {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     _insertNode(node, currentNode, previousNode) {
         node.prev = previousNode;
@@ -56,7 +69,7 @@ export default class DoublyLinkedList extends LinkedList {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     _prependNode(node, headNode) {
         headNode.prev = node;
@@ -65,7 +78,7 @@ export default class DoublyLinkedList extends LinkedList {
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     _removeNode(node, nextNode, previousNode) {
         if (nextNode) {
@@ -73,18 +86,5 @@ export default class DoublyLinkedList extends LinkedList {
         }
 
         return super._removeNode(node, nextNode, previousNode);
-    }
-}
-
-/**
- * @property {DoublyLinkedListNode|null} next
- * @property {DoublyLinkedListNode|null} prev
- */
-export class DoublyLinkedListNode extends Node {
-    constructor(data) {
-        super(data);
-
-        this.next = null;
-        this.prev = null;
     }
 }

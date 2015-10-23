@@ -1,6 +1,36 @@
 import Collection from '../Collection';
 
 /**
+ * Return the left child index for the defined index.
+ *
+ * @param {Number} index
+ * @returns {Number}
+ */
+export function leftChildIndex(index) {
+    return (index * 2 + 1);
+}
+
+/**
+ * Return the parent index for the defined index.
+ *
+ * @param {Number} index
+ * @returns {Number}
+ */
+export function parentIndex(index) {
+    return Math.floor((index - 1) / 2);
+}
+
+/**
+ * Return the right child index for the defined index.
+ *
+ * @param {Number} index
+ * @returns {Number}
+ */
+export function rightChildIndex(index) {
+    return (index * 2 + 2);
+}
+
+/**
  * A `Heap` is an abstract binary tree-based data structure (using array indices) that satisfies the heap property:
  * A parent node must have a greater (or lower) value than that of its children.
  *
@@ -17,7 +47,6 @@ export default class Heap extends Collection {
      *
      * @param {Node} node
      * @param {Node} parentNode
-     * @returns {Boolean}
      */
     compare(node, parentNode) {
         this.error('{class} compare() must be implemented');
@@ -40,12 +69,13 @@ export default class Heap extends Collection {
      * @returns {Number}
      */
     indexOf(value) {
-        for (var i = 0; i < this.size; i++) {
+        for (let i = 0; i < this.size; i++) {
             if (this.items[i].value === value) {
                 return i;
             }
         }
 
+        /* eslint no-magic-numbers: 0 */
         return -1;
     }
 
@@ -60,7 +90,11 @@ export default class Heap extends Collection {
             return null;
         }
 
-        let node = this.items[0];
+        let node = this.items[0],
+            index = 0,
+            leftIndex = 0,
+            rightIndex = 0,
+            largestIndex = 0;
 
         // Move last item to the top
         this.items[0] = this.items.pop();
@@ -69,11 +103,6 @@ export default class Heap extends Collection {
         this.size -= 1;
 
         // Bubble downwards
-        let index = 0,
-            leftIndex,
-            rightIndex,
-            largestIndex;
-
         while (true) {
             leftIndex = leftChildIndex(index);
             rightIndex = rightChildIndex(index);
@@ -87,16 +116,16 @@ export default class Heap extends Collection {
                 largestIndex = rightIndex;
             }
 
-            if (largestIndex !== index) {
-                let temp = this.items[index];
-
-                this.items[index] = this.items[largestIndex];
-                this.items[largestIndex] = temp;
-
-                index = largestIndex;
-            } else {
+            if (largestIndex === index) {
                 break;
             }
+
+            let temp = this.items[index];
+
+            this.items[index] = this.items[largestIndex];
+            this.items[largestIndex] = temp;
+
+            index = largestIndex;
         }
 
         return node.value;
@@ -171,35 +200,4 @@ export default class Heap extends Collection {
     top() {
         return this.isEmpty() ? null : this.items[0].value;
     }
-}
-
-
-/**
- * Return the left child index for the defined index.
- *
- * @param {Number} index
- * @returns {Number}
- */
-export function leftChildIndex(index) {
-    return (index * 2 + 1);
-}
-
-/**
- * Return the parent index for the defined index.
- *
- * @param {Number} index
- * @returns {Number}
- */
-export function parentIndex(index) {
-    return Math.floor((index - 1) / 2);
-}
-
-/**
- * Return the right child index for the defined index.
- *
- * @param {Number} index
- * @returns {Number}
- */
-export function rightChildIndex(index) {
-    return (index * 2 + 2);
 }
