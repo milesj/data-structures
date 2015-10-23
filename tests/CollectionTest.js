@@ -2,7 +2,7 @@ import Collection from '../src/Collection';
 import Node from '../src/Node';
 
 describe('Collection', () => {
-    let coll;
+    let coll = null;
 
     beforeEach(() => {
         coll = new Collection();

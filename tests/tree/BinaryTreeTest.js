@@ -28,6 +28,11 @@ import { StringComparator } from '../../src/Comparator';
  *     23    56    82
  *    /
  *  12
+ *
+ * @param {BinaryTree} tree
+ * @param {Boolean} complete
+ * @param {Boolean} full
+ * @returns {BinaryTree}
  */
 function populateTree(tree, complete = false, full = false) {
     tree.empty();
@@ -44,6 +49,12 @@ function populateTree(tree, complete = false, full = false) {
     return tree;
 }
 
+/**
+ * Convert the list of nodes to an array of values.
+ *
+ * @param {Node[]} nodes
+ * @returns {*[]}
+ */
 function nodesToArray(nodes) {
     let array = [];
 
@@ -154,7 +165,9 @@ describe('BinaryTree', () => {
 
     describe('getNodesAtLevel()', () => {
         it('should error for an invalid level', () => {
-            expect(() => { tree.getNodesAtLevel(-1); }).toThrowError('Level out of range');
+            expect(() => {
+                tree.getNodesAtLevel(-1);
+            }).toThrowError('Level out of range');
         });
 
         it('should return an empty array if empty', () => {
@@ -815,6 +828,7 @@ describe('BinaryTree', () => {
             o7 = { key: 'c', name: 'Chukky' },
             o8 = { key: 'm1', name: 'Matt' },
             o9 = { key: 'm2', name: 'Melanie' },
+            result = null;
 
         tree = new BinaryTree(new StringComparator());
         tree.insertAll([o1, o2, o3, o4, o5, o6, o7, o8, o9]);
@@ -828,7 +842,7 @@ describe('BinaryTree', () => {
         expect(tree.search('c').value).toBe(o7);
         expect(tree.maxDepth()).toBe(4);
 
-        let result = tree.remove('k');
+        result = tree.remove('k');
 
         expect(result).toBe(true);
         expect(tree.toArray()).toEqual(['m3', 'a', 'z', 'm1', 'w', 'i', 'm2', 'c']);

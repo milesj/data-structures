@@ -185,7 +185,9 @@ describe('Stack', () => {
 
             expect(stack.size).toBe(1);
 
-            expect(() => { stack.push(2); }).toThrowError('Stack is full');
+            expect(() => {
+                stack.push(2);
+            }).toThrowError('Stack is full');
         });
     });
 
@@ -253,14 +255,15 @@ describe('Stack', () => {
     it('should be usable with objects', () => {
         let foo = { key: 1, name: 'foo' },
             bar = { key: 2, name: 'bar' },
-            baz = { key: 3, name: 'baz' };
+            baz = { key: 3, name: 'baz' },
+            value = null;
 
         stack.pushAll([foo, bar, baz]);
 
         expect(stack.contains(foo)).toBe(true);
         expect(stack.indexOf(bar)).toBe(1);
 
-        let value = stack.pop();
+        value = stack.pop();
 
         expect(value).toBe(baz);
         expect(stack.top()).toBe(bar);

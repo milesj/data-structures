@@ -31,12 +31,18 @@ describe('Node', () => {
     });
 
     it('should find a key from an object', () => {
-        let node = new Node({ key: 1, name: 'foo' });
+        let node = new Node({ key: 1, name: 'foo' }),
+            obj = null;
 
         expect(node.key).toBe(1);
         expect(node.value).toEqual({ key: 1, name: 'foo' });
 
-        let obj = { getNodeKey() { return 2; }, name: 'bar' };
+        obj = {
+            getNodeKey() {
+                return 2;
+            },
+            name: 'bar'
+        };
         node = new Node(obj);
 
         expect(node.key).toBe(2);

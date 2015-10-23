@@ -314,7 +314,8 @@ describe('AdjacencyMatrix', () => {
             graph.addVertices(['A', 'B']);
 
             let vertex = new Vertex('B');
-                vertex.index = 1;
+
+            vertex.index = 1;
 
             expect(graph.getVertex('B')).toEqual(vertex);
         });

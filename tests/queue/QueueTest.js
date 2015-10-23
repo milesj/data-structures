@@ -156,7 +156,9 @@ describe('Queue', () => {
 
             expect(queue.size).toBe(1);
 
-            expect(() => { queue.enqueue(2); }).toThrowError('Queue is full');
+            expect(() => {
+                queue.enqueue(2);
+            }).toThrowError('Queue is full');
         });
     });
 
@@ -272,14 +274,15 @@ describe('Queue', () => {
     it('should be usable with objects', () => {
         let foo = { key: 1, name: 'foo' },
             bar = { key: 2, name: 'bar' },
-            baz = { key: 3, name: 'baz' };
+            baz = { key: 3, name: 'baz' },
+            value = null;
 
         queue.enqueueAll([foo, bar, baz]);
 
         expect(queue.contains(foo)).toBe(true);
         expect(queue.indexOf(bar)).toBe(1);
 
-        let value = queue.dequeue();
+        value = queue.dequeue();
 
         expect(value).toBe(foo);
         expect(queue.front()).toBe(bar);

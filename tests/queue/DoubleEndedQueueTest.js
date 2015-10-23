@@ -35,7 +35,7 @@ describe('DoubleEndedQueue', () => {
                 new Node(1),
                 new Node(2),
                 new Node(3),
-                new Node(4),
+                new Node(4)
             ]);
 
             queue.dequeue();
@@ -101,7 +101,9 @@ describe('DoubleEndedQueue', () => {
 
             expect(queue.size).toBe(1);
 
-            expect(() => { queue.enqueueFront(2); }).toThrowError('DoubleEndedQueue is full');
+            expect(() => {
+                queue.enqueueFront(2);
+            }).toThrowError('DoubleEndedQueue is full');
         });
     });
 
@@ -137,14 +139,15 @@ describe('DoubleEndedQueue', () => {
     it('should be usable with objects', () => {
         let foo = { key: 1, name: 'foo' },
             bar = { key: 2, name: 'bar' },
-            baz = { key: 3, name: 'baz' };
+            baz = { key: 3, name: 'baz' },
+            value = null;
 
         queue.enqueueFrontAll([foo, bar, baz]);
 
         expect(queue.contains(foo)).toBe(true);
         expect(queue.indexOf(bar)).toBe(1);
 
-        let value = queue.dequeueBack();
+        value = queue.dequeueBack();
 
         expect(value).toBe(foo);
         expect(queue.front()).toBe(baz);

@@ -1,5 +1,12 @@
+/* eslint no-unused-vars: 0 */
+
 import HashTable, { modulo, djb2, sdbm, sax, fnv, oat } from '../../src/map/HashTable';
 
+/**
+ * Populate the hash table with test data.
+ *
+ * @param {HashTable} map
+ */
 function populateMap(map) {
     map.putAll([
         'Miles', 'Alvin', 'Will', 'Zach', 'Melanie', 'Jon', 'Ian', 'Chukky', 'Keith', 'Matt',
@@ -7,6 +14,12 @@ function populateMap(map) {
     ]);
 }
 
+/**
+ * Return the contents of each bucket as a map.
+ *
+ * @param {HashTable} map
+ * @returns {{}}
+ */
 function bucketContents(map) {
     let buckets = {};
 
@@ -18,7 +31,7 @@ function bucketContents(map) {
 }
 
 describe('HashTable', () => {
-    let map;
+    let map = null;
 
     beforeEach(() => {
         map = new HashTable(modulo, 3);
@@ -53,19 +66,27 @@ describe('HashTable', () => {
 
     describe('constructor()', () => {
         it('should error if no hashing function', () => {
-            expect(() => { new HashTable(); }).toThrowError('HashTable requires a valid hashing function');
+            expect(() => {
+                let table = new HashTable();
+            }).toThrowError('HashTable requires a valid hashing function');
         });
 
         it('should error if hashing function is not a function', () => {
-            expect(() => { new HashTable(123); }).toThrowError('HashTable requires a valid hashing function');
+            expect(() => {
+                let table = new HashTable(123);
+            }).toThrowError('HashTable requires a valid hashing function');
         });
 
         it('should error if no capacity', () => {
-            expect(() => { new HashTable(modulo); }).toThrowError('HashTable requires a bucket capacity');
+            expect(() => {
+                let table = new HashTable(modulo);
+            }).toThrowError('HashTable requires a bucket capacity');
         });
 
         it('should error if capacity is <= 0', () => {
-            expect(() => { new HashTable(modulo, 0); }).toThrowError('HashTable requires a bucket capacity');
+            expect(() => {
+                let table = new HashTable(modulo, 0);
+            }).toThrowError('HashTable requires a bucket capacity');
         });
     });
 
@@ -183,7 +204,9 @@ describe('HashTable', () => {
             map = new HashTable(value => value % 7, 1);
             map.put(512);
 
-            expect(() => { map.put(894); }).toThrowError('HashTable is full; too many buckets');
+            expect(() => {
+                map.put(894);
+            }).toThrowError('HashTable is full; too many buckets');
         });
 
         it('should append to a bucket if it exists', () => {
@@ -282,9 +305,9 @@ describe('modulo()', () => {
         populateMap(map);
 
         expect(bucketContents(map)).toEqual({
-            0: [ 'Zach', 'Jon', 'Ian', 'Bruce', 'Kenny', 'Sylvia', 'Randy', 'Finn', '' ],
-            3: [ 'Will', 'Melanie', 'Chukky', 'Hector', 'Chad', 'Kasha' ],
-            4: [ 'Miles', 'Alvin', 'Keith', 'Matt', 'Colin' ]
+            0: ['Zach', 'Jon', 'Ian', 'Bruce', 'Kenny', 'Sylvia', 'Randy', 'Finn', ''],
+            3: ['Will', 'Melanie', 'Chukky', 'Hector', 'Chad', 'Kasha'],
+            4: ['Miles', 'Alvin', 'Keith', 'Matt', 'Colin']
         });
     });
 });
@@ -296,11 +319,11 @@ describe('djb2()', () => {
         populateMap(map);
 
         expect(bucketContents(map)).toEqual({
-            0: [ 'Keith', 'Kenny', 'Randy', 'Finn', 'Chad' ],
-            1: [ 'Zach', 'Melanie', 'Kasha', '' ],
-            2: [ 'Bruce', 'Sylvia' ],
-            3: [ 'Miles', 'Will', 'Jon', 'Ian', 'Chukky' ],
-            4: [ 'Alvin', 'Matt', 'Colin', 'Hector' ]
+            0: ['Keith', 'Kenny', 'Randy', 'Finn', 'Chad'],
+            1: ['Zach', 'Melanie', 'Kasha', ''],
+            2: ['Bruce', 'Sylvia'],
+            3: ['Miles', 'Will', 'Jon', 'Ian', 'Chukky'],
+            4: ['Alvin', 'Matt', 'Colin', 'Hector']
         });
     });
 });
@@ -312,10 +335,10 @@ describe('sdbm()', () => {
         populateMap(map);
 
         expect(bucketContents(map)).toEqual({
-            0: [ 'Alvin', 'Melanie', 'Chukky', '' ],
-            2: [ 'Will', 'Zach', 'Matt', 'Bruce', 'Kenny', 'Sylvia' ],
-            3: [ 'Miles', 'Ian', 'Randy', 'Finn' ],
-            4: [ 'Jon', 'Keith', 'Colin', 'Hector', 'Chad', 'Kasha' ]
+            0: ['Alvin', 'Melanie', 'Chukky', ''],
+            2: ['Will', 'Zach', 'Matt', 'Bruce', 'Kenny', 'Sylvia'],
+            3: ['Miles', 'Ian', 'Randy', 'Finn'],
+            4: ['Jon', 'Keith', 'Colin', 'Hector', 'Chad', 'Kasha']
         });
     });
 });
@@ -327,11 +350,11 @@ describe('sax()', () => {
         populateMap(map);
 
         expect(bucketContents(map)).toEqual({
-            0: [ 'Miles', 'Zach', 'Ian', 'Colin', 'Kenny', '' ],
-            1: [ 'Chad' ],
-            2: [ 'Alvin', 'Melanie', 'Chukky', 'Keith', 'Matt', 'Bruce', 'Randy', 'Finn', 'Kasha' ],
-            3: [ 'Hector' ],
-            4: [ 'Will', 'Jon', 'Sylvia' ]
+            0: ['Miles', 'Zach', 'Ian', 'Colin', 'Kenny', ''],
+            1: ['Chad'],
+            2: ['Alvin', 'Melanie', 'Chukky', 'Keith', 'Matt', 'Bruce', 'Randy', 'Finn', 'Kasha'],
+            3: ['Hector'],
+            4: ['Will', 'Jon', 'Sylvia']
         });
     });
 });
@@ -343,10 +366,10 @@ describe('fnv()', () => {
         populateMap(map);
 
         expect(bucketContents(map)).toEqual({
-            0: [ 'Miles', 'Will', '' ],
-            2: [ 'Alvin', 'Ian', 'Kenny', 'Sylvia', 'Randy', 'Kasha' ],
-            3: [ 'Zach', 'Melanie', 'Chukky', 'Keith', 'Matt', 'Colin', 'Hector', 'Finn' ],
-            4: [ 'Jon', 'Bruce', 'Chad' ]
+            0: ['Miles', 'Will', ''],
+            2: ['Alvin', 'Ian', 'Kenny', 'Sylvia', 'Randy', 'Kasha'],
+            3: ['Zach', 'Melanie', 'Chukky', 'Keith', 'Matt', 'Colin', 'Hector', 'Finn'],
+            4: ['Jon', 'Bruce', 'Chad']
         });
     });
 });
@@ -358,11 +381,11 @@ describe('oat()', () => {
         populateMap(map);
 
         expect(bucketContents(map)).toEqual({
-            0: [ 'Will', 'Chukky', 'Hector', 'Kenny', 'Randy', '' ],
-            1: [ 'Miles', 'Chad' ],
-            2: [ 'Alvin', 'Zach', 'Jon', 'Ian', 'Keith', 'Colin', 'Finn' ],
-            3: [ 'Matt' ],
-            4: [ 'Melanie', 'Bruce', 'Sylvia', 'Kasha' ]
+            0: ['Will', 'Chukky', 'Hector', 'Kenny', 'Randy', ''],
+            1: ['Miles', 'Chad'],
+            2: ['Alvin', 'Zach', 'Jon', 'Ian', 'Keith', 'Colin', 'Finn'],
+            3: ['Matt'],
+            4: ['Melanie', 'Bruce', 'Sylvia', 'Kasha']
         });
     });
 });

@@ -141,11 +141,15 @@ describe('LinkedList', () => {
 
     describe('insert()', () => {
         it('should error if index below 0', () => {
-            expect(() => { list.insert(1, -1); }).toThrowError('Index out of range');
+            expect(() => {
+                list.insert(1, -1);
+            }).toThrowError('Index out of range');
         });
 
         it('should error if index is greater than size', () => {
-            expect(() => { list.insert(1, list.size + 1); }).toThrowError('Index out of range');
+            expect(() => {
+                list.insert(1, list.size + 1);
+            }).toThrowError('Index out of range');
         });
 
         it('should set the head if index is 0', () => {
@@ -318,13 +322,17 @@ describe('LinkedList', () => {
         it('should error if the index is below 0', () => {
             list.append(1);
 
-            expect(() => { list.removeAt(-1); }).toThrowError('Index out of range');
+            expect(() => {
+                list.removeAt(-1);
+            }).toThrowError('Index out of range');
         });
 
         it('should error if the index is greater than size', () => {
             list.append(1);
 
-            expect(() => { list.removeAt(1); }).toThrowError('Index out of range');
+            expect(() => {
+                list.removeAt(1);
+            }).toThrowError('Index out of range');
         });
 
         it('should remove the head and reset', () => {
@@ -509,7 +517,8 @@ describe('LinkedList', () => {
         let foo = { key: 1, name: 'foo' },
             bar = { key: 2, name: 'bar' },
             baz = { key: 3, name: 'baz' },
-            wat = { key: 0, name: 'wat' };
+            wat = { key: 0, name: 'wat' },
+            value = null;
 
         list.appendAll([foo, bar, baz]).prepend(wat);
 
@@ -518,7 +527,7 @@ describe('LinkedList', () => {
         expect(list.first()).toBe(wat);
         expect(list.last()).toBe(baz);
 
-        let value = list.removeFirst();
+        value = list.removeFirst();
 
         expect(value).toBe(wat);
         expect(list.first()).toBe(foo);

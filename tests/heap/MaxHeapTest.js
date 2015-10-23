@@ -176,7 +176,9 @@ describe('MaxHeap', () => {
 
             expect(heap.size).toBe(1);
 
-            expect(() => { heap.push(2); }).toThrowError('MaxHeap is full');
+            expect(() => {
+                heap.push(2);
+            }).toThrowError('MaxHeap is full');
         });
 
         it('should set the first value to the 0 index if empty', () => {
@@ -206,7 +208,8 @@ describe('MaxHeap', () => {
     it('should be usable with objects', () => {
         let foo = { key: 1, name: 'foo' },
             bar = { key: 2, name: 'bar' },
-            baz = { key: 3, name: 'baz' };
+            baz = { key: 3, name: 'baz' },
+            value = null;
 
         heap.pushAll([foo, bar, baz]);
 
@@ -215,7 +218,7 @@ describe('MaxHeap', () => {
         expect(heap.indexOf(foo)).toBe(1);
         expect(heap.max()).toBe(baz);
 
-        let value = heap.pop();
+        value = heap.pop();
 
         expect(value).toBe(baz);
         expect(heap.max()).toBe(bar);

@@ -91,7 +91,9 @@ describe('DisjointSet', () => {
 
             expect(set.size).toBe(1);
 
-            expect(() => { set.insert(2); }).toThrowError('DisjointSet is full');
+            expect(() => {
+                set.insert(2);
+            }).toThrowError('DisjointSet is full');
         });
 
         it('should set a value into the cache and assign an index', () => {
@@ -229,7 +231,8 @@ describe('DisjointSet', () => {
             b = { name: 'b' },
             c = { name: 'c' },
             d = { name: 'd' },
-            e = { name: 'e' };
+            e = { name: 'e' },
+            node = null;
 
         set.insertAll([a, b, c, d, e]);
 
@@ -243,7 +246,7 @@ describe('DisjointSet', () => {
             [a, c, e], [b], [d]
         ]);
 
-        let node = set.find(e);
+        node = set.find(e);
 
         expect(node.value).toBe(a);
         expect(node.parent).toBe(0);
