@@ -1,5 +1,5 @@
 import AdjacencyMatrix from '../../src/graph/AdjacencyMatrix';
-import { Vertex, Edge } from '../../src/graph/Graph';
+import { Vertex } from '../../src/graph/Graph';
 
 describe('AdjacencyMatrix', () => {
     let graph = null;
@@ -71,32 +71,57 @@ describe('AdjacencyMatrix', () => {
         });
 
         it('should increase size for directed edges', () => {
-            expect(graph.edgeSize).toBe(0);
+            expect(graph.edges.size).toBe(0);
 
             graph.addVertices(['A', 'B', 'C']);
             graph.addEdge('A', 'B');
 
-            expect(graph.edgeSize).toBe(1);
+            expect(graph.edges.size).toBe(1);
         });
 
         it('should increase size for undirected edges', () => {
-            expect(graph.edgeSize).toBe(0);
+            expect(graph.edges.size).toBe(0);
 
             graph.addVertices(['A', 'B', 'C']);
             graph.addEdge('A', 'B', 1, true);
 
-            expect(graph.edgeSize).toBe(1);
+            expect(graph.edges.size).toBe(1);
         });
 
-        it('should not increase size of an edge exists', () => {
-            expect(graph.edgeSize).toBe(0);
-
-            graph.addVertices(['A', 'B', 'C']);
-            graph.addEdge('B', 'A');
+        it('should set individual edges for directed', () => {
+            graph.addVertices(['A', 'B', 'C', 'E']);
             graph.addEdge('A', 'B');
-            graph.addEdge('A', 'B', 1, true);
+            graph.addEdge('C', 'E');
 
-            expect(graph.edgeSize).toBe(1);
+            expect(graph.edges.has('(0:1)')).toBe(true);
+            expect(graph.edges.has('(2:3)')).toBe(true);
+
+            let abEdge = graph.edges.get('(0:1)'),
+                ceEdge = graph.edges.get('(2:3)');
+
+            expect(abEdge.origin).toBe(graph.vertices.get(0));
+            expect(abEdge.target).toBe(graph.vertices.get(1));
+            expect(abEdge.directed).toBe(true);
+
+            expect(ceEdge.origin).toBe(graph.vertices.get(2));
+            expect(ceEdge.target).toBe(graph.vertices.get(3));
+            expect(ceEdge.directed).toBe(true);
+        });
+
+        it('should set a self loop', () => {
+            graph.addVertices(['A', 'B', 'C']);
+            graph.addEdge('A', 'A');
+
+            expect(graph.edges.get('(0:0)').selfLoop).toBe(true);
+        });
+
+        it('should set a weight', () => {
+            graph.addVertices(['A', 'B', 'C']);
+            graph.addEdge('A', 'B');
+            graph.addEdge('C', 'A', 6);
+
+            expect(graph.edges.get('(0:1)').weight).toBe(1);
+            expect(graph.edges.get('(2:0)').weight).toBe(6);
         });
     });
 
@@ -156,13 +181,14 @@ describe('AdjacencyMatrix', () => {
 
     describe('addVertex()', () => {
         it('should map a value to a vertex', () => {
-            expect(graph.vertexSize).toBe(0);
-            expect(graph.vertices.has('A')).toBe(false);
+            expect(graph.vertices.size).toBe(0);
+            expect(graph.items.has('A')).toBe(false);
 
             graph.addVertex('A');
 
-            expect(graph.vertexSize).toBe(1);
-            expect(graph.vertices.has('A')).toBe(true);
+            expect(graph.vertices.size).toBe(1);
+            expect(graph.vertices.has(graph.items.get('A')));
+            expect(graph.items.has('A')).toBe(true);
         });
 
         it('should set an index on each vertex', () => {
@@ -171,24 +197,24 @@ describe('AdjacencyMatrix', () => {
             graph.addVertex('A').addVertex('B');
 
             expect(graph.index).toBe(2);
-            expect(graph.vertices.get('A').index).toBe(0);
-            expect(graph.vertices.get('B').index).toBe(1);
+            expect(graph.vertices.get(graph.items.get('A')).index).toBe(0);
+            expect(graph.vertices.get(graph.items.get('B')).index).toBe(1);
         });
 
         it('should not allow dupes', () => {
-            expect(graph.vertexSize).toBe(0);
+            expect(graph.vertices.size).toBe(0);
 
             graph.addVertex('A').addVertex('A');
 
-            expect(graph.vertexSize).toBe(1);
+            expect(graph.vertices.size).toBe(1);
         });
 
         it('should increase size', () => {
-            expect(graph.vertexSize).toBe(0);
+            expect(graph.vertices.size).toBe(0);
 
             graph.addVertex('A').addVertex('B');
 
-            expect(graph.vertexSize).toBe(2);
+            expect(graph.vertices.size).toBe(2);
         });
 
         it('should expand the matrix for each vertex', () => {
@@ -264,15 +290,15 @@ describe('AdjacencyMatrix', () => {
 
     describe('addVertices()', () => {
         it('should add multiple vertices', () => {
-            expect(graph.vertexSize).toBe(0);
-            expect(graph.vertices.has('A')).toBe(false);
-            expect(graph.vertices.has('B')).toBe(false);
+            expect(graph.vertices.size).toBe(0);
+            expect(graph.items.has('A')).toBe(false);
+            expect(graph.items.has('B')).toBe(false);
 
             graph.addVertices(['A', 'B']);
 
-            expect(graph.vertexSize).toBe(2);
-            expect(graph.vertices.has('A')).toBe(true);
-            expect(graph.vertices.has('B')).toBe(true);
+            expect(graph.vertices.size).toBe(2);
+            expect(graph.items.has('A')).toBe(true);
+            expect(graph.items.has('B')).toBe(true);
         });
     });
 
@@ -291,15 +317,15 @@ describe('AdjacencyMatrix', () => {
             graph.addVertices(['A', 'B', 'C']);
             graph.addUndirectedEdge('A', 'B');
 
-            expect(graph.edgeSize).toBe(1);
-            expect(graph.vertexSize).toBe(3);
+            expect(graph.edges.size).toBe(1);
+            expect(graph.vertices.size).toBe(3);
             expect(graph.vertices.size).toBe(3);
             expect(graph.isEmpty()).toBe(false);
 
             graph.empty();
 
-            expect(graph.edgeSize).toBe(0);
-            expect(graph.vertexSize).toBe(0);
+            expect(graph.edges.size).toBe(0);
+            expect(graph.vertices.size).toBe(0);
             expect(graph.vertices.size).toBe(0);
             expect(graph.isEmpty()).toBe(true);
         });
@@ -334,6 +360,33 @@ describe('AdjacencyMatrix', () => {
             c.index = 0;
 
             expect(graph.getVertices()).toEqual([c, b, a]);
+        });
+    });
+
+    describe('hasEdge()', () => {
+        it('should return false if a vertex does not exist', () => {
+            graph.addVertex('A');
+
+            expect(graph.hasEdge('A', 'B')).toBe(false);
+        });
+
+        it('should return true for a directed edge', () => {
+            graph.addVertices(['A', 'B', 'C']);
+
+            expect(graph.hasEdge('A', 'B')).toBe(false);
+
+            graph.addEdge('A', 'B');
+
+            expect(graph.hasEdge('A', 'B')).toBe(true);
+        });
+
+        it('should return true for either direction', () => {
+            graph.addVertices(['A', 'B', 'C']);
+            graph.addEdge('A', 'B');
+
+            expect(graph.hasEdge('A', 'B')).toBe(true);
+            expect(graph.hasEdge('B', 'A')).toBe(false);
+            expect(graph.hasEdge('B', 'A', true)).toBe(true);
         });
     });
 
@@ -412,7 +465,7 @@ describe('AdjacencyMatrix', () => {
             graph.addEdge('A', 'B');
             graph.addEdge('C', 'C');
 
-            expect(graph.edgeSize).toBe(2);
+            expect(graph.edges.size).toBe(2);
             expect(graph.matrix).toEqual([
                 [0, 1, 0],
                 [0, 0, 0],
@@ -421,7 +474,7 @@ describe('AdjacencyMatrix', () => {
 
             graph.removeEdge('C', 'C');
 
-            expect(graph.edgeSize).toBe(1);
+            expect(graph.edges.size).toBe(1);
             expect(graph.matrix).toEqual([
                 [0, 1, 0],
                 [0, 0, 0],
@@ -430,7 +483,7 @@ describe('AdjacencyMatrix', () => {
 
             graph.removeEdge('A', 'B');
 
-            expect(graph.edgeSize).toBe(0);
+            expect(graph.edges.size).toBe(0);
         });
 
         it('should decrease size for undirected edges', () => {
@@ -438,7 +491,7 @@ describe('AdjacencyMatrix', () => {
             graph.addUndirectedEdge('A', 'B');
             graph.addUndirectedEdge('C', 'A');
 
-            expect(graph.edgeSize).toBe(2);
+            expect(graph.edges.size).toBe(2);
             expect(graph.matrix).toEqual([
                 [0, 1, 1],
                 [1, 0, 0],
@@ -447,38 +500,12 @@ describe('AdjacencyMatrix', () => {
 
             graph.removeEdge('A', 'C', true); // Reversed
 
-            expect(graph.edgeSize).toBe(1);
+            expect(graph.edges.size).toBe(1);
             expect(graph.matrix).toEqual([
                 [0, 1, 0],
                 [1, 0, 0],
                 [0, 0, 0]
             ]);
-        });
-
-        it('should not increase size of an edge exists', () => {
-            graph.addVertices(['A', 'B', 'C']);
-            graph.addUndirectedEdge('A', 'B');
-            graph.addUndirectedEdge('C', 'A');
-
-            expect(graph.edgeSize).toBe(2);
-            expect(graph.matrix).toEqual([
-                [0, 1, 1],
-                [1, 0, 0],
-                [1, 0, 0]
-            ]);
-
-            graph.removeEdge('A', 'B');
-
-            expect(graph.edgeSize).toBe(2);
-            expect(graph.matrix).toEqual([
-                [0, 0, 1],
-                [1, 0, 0],
-                [1, 0, 0]
-            ]);
-
-            graph.removeEdge('B', 'A');
-
-            expect(graph.edgeSize).toBe(1);
         });
     });
 
@@ -538,7 +565,7 @@ describe('AdjacencyMatrix', () => {
             graph.addUndirectedEdge('A', 'B');
             graph.addUndirectedEdge('C', 'A');
 
-            expect(graph.edgeSize).toBe(2);
+            expect(graph.edges.size).toBe(2);
             expect(graph.matrix).toEqual([
                 [0, 1, 1],
                 [1, 0, 0],
@@ -548,7 +575,7 @@ describe('AdjacencyMatrix', () => {
             graph.removeUndirectedEdge('A', 'B');
             graph.removeUndirectedEdge('A', 'C');
 
-            expect(graph.edgeSize).toBe(0);
+            expect(graph.edges.size).toBe(0);
             expect(graph.matrix).toEqual([
                 [0, 0, 0],
                 [0, 0, 0],
@@ -563,16 +590,16 @@ describe('AdjacencyMatrix', () => {
         });
 
         it('should remove the reference', () => {
-            expect(graph.vertices.has('A')).toBe(false);
+            expect(graph.items.has('A')).toBe(false);
 
             graph.addVertex('A');
 
-            expect(graph.vertices.has('A')).toBe(true);
+            expect(graph.items.has('A')).toBe(true);
 
             let result = graph.removeVertex('A');
 
             expect(result).toBe(true);
-            expect(graph.vertices.has('A')).toBe(false);
+            expect(graph.items.has('A')).toBe(false);
         });
 
         it('should remove edges', () => {
@@ -598,11 +625,11 @@ describe('AdjacencyMatrix', () => {
         it('should decrease the size', () => {
             graph.addVertices(['A', 'B', 'C']);
 
-            expect(graph.vertexSize).toBe(3);
+            expect(graph.vertices.size).toBe(3);
 
             graph.removeVertex('B');
 
-            expect(graph.vertexSize).toBe(2);
+            expect(graph.vertices.size).toBe(2);
         });
     });
 
@@ -610,11 +637,11 @@ describe('AdjacencyMatrix', () => {
         it('should remove multiple vertices', () => {
             graph.addVertices(['A', 'B', 'C', 'D', 'E']);
 
-            expect(graph.vertexSize).toBe(5);
+            expect(graph.vertices.size).toBe(5);
 
             graph.removeVertices(['A', 'C', 'F']);
 
-            expect(graph.vertexSize).toBe(3);
+            expect(graph.vertices.size).toBe(3);
         });
     });
 });

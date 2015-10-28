@@ -1,4 +1,4 @@
-import Graph, { Vertex, Edge, BREADTH_FIRST, DEPTH_FIRST } from './Graph';
+import Graph, { Edge, BREADTH_FIRST, DEPTH_FIRST } from './Graph';
 
 /**
  * An `AdjacencyMatrix` is a type of graph data structure that utilizes arrays of nested arrays to create
@@ -6,6 +6,10 @@ import Graph, { Vertex, Edge, BREADTH_FIRST, DEPTH_FIRST } from './Graph';
  *
  * @property {Number} index - The current vertex index in the matrix
  * @property {Array} matrix - The array matrix that denotes edges
+ *
+ * @link https://ece.uwaterloo.ca/~cmoreno/ece250/2012-03-26--graphs-implementation.pdf
+ * @link http://algs4.cs.princeton.edu/42digraph/
+ * @link http://doc.sagemath.org/html/en/reference/graphs/sage/graphs/digraph.html
  */
 export default class AdjacencyMatrix extends Graph {
 
@@ -38,29 +42,37 @@ export default class AdjacencyMatrix extends Graph {
      * @param {*} a
      * @param {*} b
      * @param {Number} weight
-     * @param {Boolean} bidi - Mark this edge as undirected
+     * @param {Boolean} undirected
      * @returns {AdjacencyMatrix}
      */
-    addEdge(a, b, weight = 1, bidi = false) {
+    addEdge(a, b, weight = 1, undirected = false) {
         let origin = this.getVertex(a),
-            target = this.getVertex(b);
+            target = this.getVertex(b),
+            key = null,
+            edge = null;
 
         if (!origin || !target) {
             return this;
-        }
-
-        // Increase edge count
-        if (!this.matrix[origin.index][target.index] && !this.matrix[target.index][origin.index]) {
-            this.edgeSize += 1;
         }
 
         // Set directed
         this.matrix[origin.index][target.index] = weight;
 
         // Set undirected
-        if (bidi) {
+        if (undirected) {
             this.matrix[target.index][origin.index] = weight;
         }
+
+        // Set the edge
+        key = this.getEdgeKey(origin.index, target.index, undirected);
+
+        edge = this.edges.get(key) || new Edge(origin, target);
+        edge.key = key;
+        edge.weight = weight;
+        edge.directed = !undirected;
+        edge.selfLoop = (a === b);
+
+        this.edges.set(key, edge);
 
         return this;
     }
@@ -100,20 +112,18 @@ export default class AdjacencyMatrix extends Graph {
      * @returns {AdjacencyMatrix}
      */
     addVertex(value) {
-        let vertex = this.createNode(value);
-
-        if (this.vertices.has(value)) {
+        if (this.items.has(value)) {
             return this;
         }
 
-        // Set node index
+        let vertex = this.createNode(value);
+
+        // Set node index and increase
         vertex.index = this.index++;
 
-        // Increase size
-        this.vertexSize += 1;
-
         // Keep a reference for quick lookup
-        this.vertices.set(value, vertex);
+        this.items.set(value, vertex.index);
+        this.vertices.set(vertex.index, vertex);
 
         // Expand the matrix if necessary
         if (!(vertex.index in this.matrix)) {
@@ -140,49 +150,27 @@ export default class AdjacencyMatrix extends Graph {
     }
 
     /**
-     * @inheritdoc
+     * Returns true if there is a directed edge between the origin and target vertices.
+     * If the third argument is true, it will check if there's an edge in either direction.
+     *
+     * @param {*} a
+     * @param {*} b
+     * @param {Boolean} undirected
+     * @returns {Boolean}
      */
-    getEdges() {
-        let edges = [],
-            edge = null,
-            edgeCache = new Map(),
-            vertexCache = new Map();
+    hasEdge(a, b, undirected = false) {
+        let origin = this.getVertex(a),
+            target = this.getVertex(b);
 
-        // Cache each vertex by index
-        for (let vertex of this.vertices) {
-            vertexCache.set(vertex.index, vertex);
+        if (!origin || !target) {
+            return false;
         }
 
-        // Loop over each vertex
-        for (let vertex of this.vertices) {
-            // Loop over each edge
-            for (let [index, weight] of this.matrix[vertex.index]) {
-                if (index <= 0) {
-                    continue;
-                }
-
-                // Check cache first
-                edge = edgeCache.get(vertex.index + ':' + index) || edgeCache.get(index + ':' + vertex.index);
-
-                // Create a new edge
-                if (typeof edge === 'undefined') {
-                    edge = new Edge(vertex, vertexCache.get(index));
-                    edge.weight = weight;
-                    edge.selfLoop = (vertex.index === index);
-
-                    // Save the cache
-                    edgeCache.set(vertex.index + ':' + index, edge);
-                    edges.push(edge);
-
-                // Edge already exists
-                } else {
-                    edge.directed = false;
-                    edge.weight = Math.max(edge.weight, weight);
-                }
-            }
+        if (undirected) {
+            return (this.matrix[origin.index][target.index] >= 1 || this.matrix[target.index][origin.index] >= 1);
         }
 
-        return edges;
+        return (this.matrix[origin.index][target.index] >= 1);
     }
 
     /**
@@ -264,10 +252,10 @@ export default class AdjacencyMatrix extends Graph {
      *
      * @param {*} a
      * @param {*} b
-     * @param {Boolean} bidi
+     * @param {Boolean} undirected
      * @returns {AdjacencyMatrix}
      */
-    removeEdge(a, b, bidi = false) {
+    removeEdge(a, b, undirected = false) {
         let origin = this.getVertex(a),
             target = this.getVertex(b);
 
@@ -275,18 +263,16 @@ export default class AdjacencyMatrix extends Graph {
             return this;
         }
 
-        // Set directed
+        // Remove directed
         this.matrix[origin.index][target.index] = 0;
 
-        // Set undirected
-        if (bidi) {
+        // Remove undirected
+        if (undirected) {
             this.matrix[target.index][origin.index] = 0;
         }
 
-        // Decrease edge count
-        if (!this.matrix[origin.index][target.index] && !this.matrix[target.index][origin.index]) {
-            this.edgeSize -= 1;
-        }
+        // Remove edge
+        this.edges.delete(this.getEdgeKey(origin.index, target.index, undirected));
 
         return this;
     }
@@ -332,17 +318,15 @@ export default class AdjacencyMatrix extends Graph {
             return false;
         }
 
-        // Remove reference
-        this.vertices.delete(value);
-
         // Remove edges
-        for (let i = 0, index = vertex.index; i < this.vertexSize; i++) {
+        for (let i = 0, index = vertex.index; i < this.vertices.size; i++) {
             this.matrix[index][i] = 0; // Row
             this.matrix[i][index] = 0; // Column
         }
 
-        // Decrease size
-        this.vertexSize -= 1;
+        // Remove reference
+        this.items.delete(value);
+        this.vertices.delete(vertex.index);
 
         return true;
     }
@@ -359,6 +343,13 @@ export default class AdjacencyMatrix extends Graph {
         return this;
     }
 
+    /**
+     * TODO
+     *
+     * @param {Function} callback
+     * @param {String} method
+     * @returns {AdjacencyMatrix}
+     */
     traverse(callback, method = BREADTH_FIRST) {
         if (this.isEmpty()) {
             return this;
