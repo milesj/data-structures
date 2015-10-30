@@ -1,5 +1,5 @@
 import AdjacencyMatrix from '../../src/graph/AdjacencyMatrix';
-import { Vertex } from '../../src/graph/Graph';
+import { Vertex, Edge } from '../../src/graph/Graph';
 
 describe('AdjacencyMatrix', () => {
     let graph = null;
@@ -328,6 +328,95 @@ describe('AdjacencyMatrix', () => {
             expect(graph.vertices.size).toBe(0);
             expect(graph.vertices.size).toBe(0);
             expect(graph.isEmpty()).toBe(true);
+        });
+    });
+
+    describe('getEdge()', () => {
+        it('should return null if no vertex found', () => {
+            expect(graph.getEdge('A', 'B')).toBeNull();
+        });
+
+        it('should return null if no edge exists', () => {
+            graph.addVertices(['A', 'B']);
+
+            expect(graph.getEdge('A', 'B')).toBeNull();
+        });
+
+        it('should return the edge object', () => {
+            graph.addVertices(['A', 'B']);
+            graph.addEdge('A', 'B');
+
+            let edge = graph.getEdge('A', 'B');
+
+            expect(edge.origin).toEqual(graph.getVertex('A'));
+            expect(edge.target).toEqual(graph.getVertex('B'));
+            expect(edge.directed).toBe(true);
+        });
+    });
+
+    describe('getUndirectedEdge()', () => {
+        it('should return the edge object', () => {
+            graph.addVertices(['A', 'B']);
+            graph.addUndirectedEdge('A', 'B');
+
+            let edge = graph.getUndirectedEdge('A', 'B');
+
+            expect(edge.origin).toEqual(graph.getVertex('A'));
+            expect(edge.target).toEqual(graph.getVertex('B'));
+            expect(edge.directed).toBe(false);
+        });
+
+        it('should return the undirected edge instead of directed edge', () => {
+            graph.addVertices(['A', 'B', 'C', 'D']);
+            graph.addEdge('C', 'A');
+            graph.addUndirectedEdge('C', 'A');
+
+            let uEdge = graph.getUndirectedEdge('C', 'A'),
+                dEdge = graph.getEdge('C', 'A');
+
+            expect(uEdge.directed).toBe(false);
+            expect(dEdge.directed).toBe(true);
+        });
+    });
+
+    describe('getEdgeKey()', () => {
+        it('should return the index pairs as is for directed', () => {
+            expect(graph.getEdgeKey(5, 10)).toBe('(5:10)');
+        });
+
+        it('should return the index pairs sorted for undirected', () => {
+            expect(graph.getEdgeKey(5, 10, true)).toBe('{5:10}');
+            expect(graph.getEdgeKey(10, 5, true)).toBe('{5:10}');
+        });
+    });
+
+    describe('getEdges()', () => {
+        it('should return an empty array if no edges', () => {
+            expect(graph.getEdges()).toEqual([]);
+        });
+
+        it('should return an array of all edges', () => {
+            graph.addVertices(['A', 'B', 'C', 'D', 'E', 'F']);
+            graph.addEdge('B', 'C');
+            graph.addEdge('F', 'A', 3);
+            graph.addUndirectedEdge('D', 'E');
+
+            let e1 = new Edge(graph.getVertex('B'), graph.getVertex('C')),
+                e2 = new Edge(graph.getVertex('F'), graph.getVertex('A')),
+                e3 = new Edge(graph.getVertex('D'), graph.getVertex('E'));
+
+            e1.key = '(1:2)';
+            e2.key = '(5:0)';
+            e3.key = '{3:4}';
+
+            e2.weight = 3;
+            e3.directed = false;
+
+            expect(graph.getEdges()).toEqual([
+                e1,
+                e2,
+                e3
+            ]);
         });
     });
 

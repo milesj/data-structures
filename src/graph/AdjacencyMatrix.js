@@ -1,4 +1,80 @@
 import Graph, { Edge, BREADTH_FIRST, DEPTH_FIRST } from './Graph';
+import Queue from '../queue/Queue';
+
+/**
+ * Implements the adjacency matrix specific breadth-first-search traversal algorithm.
+ *
+ * @param {AdjacencyMatrix} graph
+ * @param {Map} visited
+ * @param {Function} callback
+ * @param {Number} index
+ */
+function breadthFirstSearch(graph, visited, callback, index) {
+    /* eslint callback-return: 0 */
+
+    let matrix = graph.matrix,
+        vertex = null,
+        queue = new Queue(),
+        nextIndex = 0,
+        curIndex = 0;
+
+    queue.enqueue(index);
+
+    while (!queue.isEmpty()) {
+        curIndex = queue.dequeue();
+        vertex = graph.vertices.get(curIndex);
+
+        // Set vertex as visited
+        visited.set(curIndex, true);
+
+        // Execute callback and pass vertex
+        if (callback(vertex.value, vertex) === true) {
+            return;
+        }
+
+        // Loop neighboring vertices
+        for (nextIndex = 0; nextIndex < matrix.length; nextIndex++) {
+            if (!visited.get(nextIndex) && matrix[curIndex][nextIndex]) {
+                queue.enqueue(nextIndex);
+            }
+        }
+    }
+}
+
+/**
+ * Implements the adjacency matrix specific depth-first-search traversal algorithm.
+ *
+ * @param {AdjacencyMatrix} graph
+ * @param {Map} visited
+ * @param {Function} callback
+ * @param {Number} index
+ */
+function depthFirstSearch(graph, visited, callback, index) {
+    /* eslint callback-return: 0 */
+
+    let matrix = graph.matrix,
+        vertex = graph.vertices.get(index),
+        nextIndex = 0;
+
+    // Set vertex as visited
+    visited.set(index, true);
+
+    // Execute callback and pass vertex
+    if (callback(vertex.value, vertex) === true) {
+        return;
+    }
+
+    // Loop neighboring vertices
+    for (nextIndex = 0; nextIndex < matrix.length; nextIndex++) {
+        if (!visited.get(nextIndex) && matrix[index][nextIndex]) {
+            depthFirstSearch(graph, visited, callback, nextIndex);
+        }
+    }
+}
+
+// function wgbDepthFirstSearch() {
+// TODO - http://www.cs.cornell.edu/~wdtseng/icpc/notes/graph_part1.pdf
+// }
 
 /**
  * An `AdjacencyMatrix` is a type of graph data structure that utilizes arrays of nested arrays to create
@@ -344,15 +420,67 @@ export default class AdjacencyMatrix extends Graph {
     }
 
     /**
-     * TODO
+     * Traverse the graph using 1 of 2 possible traversal algorithms: breadth-first or depth-first.
+     * Defaults to breadth-first traversal.
+     *
+     * For each vertex discovered, the callback defined will be executed passing the vertex's value and the vertex itself.
+     * Can exit the traversal loop early by returning `true` in the callback.
+     *
+     * An optional third argument can be defined, which would be the vertex to start search from.
+     * If not defined, will default to the vertex at the 0 index.
+     *
+     * Throws an error if the graph is empty, or if the callback has not been defined correctly.
      *
      * @param {Function} callback
      * @param {String} method
+     * @param {*} [startVertex]
      * @returns {AdjacencyMatrix}
      */
-    traverse(callback, method = BREADTH_FIRST) {
+    traverse(callback, method = BREADTH_FIRST, startVertex = null) {
         if (this.isEmpty()) {
             return this;
+
+        } else if (typeof callback !== 'function') {
+            throw new Error('Traversal callback must be a function');
         }
+
+        let visited = new Map(),
+            vertex = null,
+            startIndex = 0;
+
+        // Find the starting index
+        if (startVertex) {
+            vertex = this.getVertex(startVertex);
+
+            if (vertex) {
+                startIndex = vertex.index;
+
+            } else {
+                this.error('Vertex not found');
+                return this;
+            }
+        }
+
+        // Create visited map
+        for (vertex of this.vertices.values()) {
+            visited[vertex.index] = false;
+        }
+
+        // Start iterating
+        switch (method) {
+            case DEPTH_FIRST:
+                depthFirstSearch(this, visited, callback, startIndex);
+                break;
+
+            case BREADTH_FIRST:
+                breadthFirstSearch(this, visited, callback, startIndex);
+                break;
+
+            default:
+                this.error('Unknown traversal method');
+                break;
+        }
+
+        return this;
     }
 }

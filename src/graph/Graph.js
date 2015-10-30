@@ -128,7 +128,7 @@ export default class Graph extends Structure {
      * @param {Boolean} undirected
      * @returns {String}
      */
-    getEdgeKey(aIndex, bIndex, undirected) {
+    getEdgeKey(aIndex, bIndex, undirected = false) {
         if (undirected) {
             return (aIndex < bIndex) ? `{${aIndex}:${bIndex}}` : `{${bIndex}:${aIndex}}`;
         }
